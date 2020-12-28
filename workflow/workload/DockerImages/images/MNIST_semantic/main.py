@@ -20,7 +20,7 @@ out_dim = {'MNIST': 10, 'FashionMNIST': 10, 'CIFAR100': 100}
 chan_dim = {'MNIST': 1, 'FashionMNIST': 1, 'CIFAR100': 3}
 multiplier = {'MNIST': 1, 'FashionMNIST': 2, 'CIFAR100': 2}
 
-input_filename, output_filename = 'input.pt', 'output.pt'
+input_filename, output_filename = '/data/input.pt', '/data/output.pt'
 
 class LayerSplitNet(nn.Module):
     def __init__(self):
