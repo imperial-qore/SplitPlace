@@ -27,6 +27,9 @@ sudo chmod +x ~/agent/scripts/delete.sh
 
 # Load Docker images
 
-sudo docker pull shreshthtuli/yolo
-sudo docker pull shreshthtuli/pocketsphinx
-sudo docker pull shreshthtuli/aeneas
+sudo docker pull shreshthtuli/mnist_layer
+sudo docker pull shreshthtuli/mnist_semantic
+sudo docker pull shreshthtuli/fashionmnist_layer
+sudo docker pull shreshthtuli/fashionmnist_semantic
+sudo docker pull shreshthtuli/cifar100_layer
+sudo docker pull shreshthtuli/cifar100_semantic
