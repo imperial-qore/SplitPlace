@@ -1,16 +1,16 @@
 [![License](https://img.shields.io/badge/License-BSD%203--Clause-red.svg)](https://github.com/imperial-qore/COSCO/blob/master/LICENSE)
 ![Python 3.7, 3.8](https://img.shields.io/badge/python-3.7%20%7C%203.8-blue.svg)
 [![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fimperial-qore%2FCOSCO&count_bg=%23FFC401&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false)](https://hits.seeyoufarm.com)
-[![Actions Status](https://github.com/imperial-qore/SimpleFogSim/workflows/DeFog-Benchmarks/badge.svg)](https://github.com/imperial-qore/SimpleFogSim/actions)
 <br>
+[![Actions Status](https://github.com/imperial-qore/COSCO/workflows/DeFog-Benchmarks/badge.svg)](https://github.com/imperial-qore/COSCO/actions)
 ![Docker pulls yolo](https://img.shields.io/docker/pulls/shreshthtuli/yolo?label=yolo)
 ![Docker pulls pocketsphinx](https://img.shields.io/docker/pulls/shreshthtuli/pocketsphinx?label=pocketsphinx)
 ![Docker pulls aeneas](https://img.shields.io/docker/pulls/shreshthtuli/aeneas?label=aeneas)
 <br>
+[![Actions Status](https://github.com/imperial-qore/COSCO/workflows/SplitPlace-Benchmarks/badge.svg)](https://github.com/imperial-qore/COSCO/actions)
 ![Docker pulls mnist_layer](https://img.shields.io/docker/pulls/shreshthtuli/mnist_layer?label=mnist_layer)
 ![Docker pulls fashionmnist_layer](https://img.shields.io/docker/pulls/shreshthtuli/fashionmnist_layer?label=fashionmnist_layer)
 ![Docker pulls cifar100_layer](https://img.shields.io/docker/pulls/shreshthtuli/cifar100_layer?label=cifar100_layer)
-<br>
 ![Docker pulls mnist_semantic](https://img.shields.io/docker/pulls/shreshthtuli/mnist_semantic?label=mnist_semantic)
 ![Docker pulls fashionmnist_semantic](https://img.shields.io/docker/pulls/shreshthtuli/fashionmnist_semantic?label=fashionmnist_semantic)
 ![Docker pulls cifar100_semantic](https://img.shields.io/docker/pulls/shreshthtuli/cifar100_semantic?label=cifar100_semantic)
