@@ -6,6 +6,7 @@ simulator/workload/datasets
 scheduler/A2C/dataset
 .vagrant
 framework/agent/DockerImages
+workflow/workload/DockerImages/data/
 all_datasets
 results
 modstat.py
