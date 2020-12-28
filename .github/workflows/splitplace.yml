@@ -8,7 +8,7 @@ on:
   push:
     branches: [ workflow ]
     paths:
-      - 'workflow/workload/DockerImages/images/'
+      - 'workflow/workload/DockerImages/images/**'
       - '.github/workflows/*.yml'
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
