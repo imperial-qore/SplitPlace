@@ -3,17 +3,17 @@
 [![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fimperial-qore%2FCOSCO&count_bg=%23FFC401&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false)](https://hits.seeyoufarm.com)
 [![Actions Status](https://github.com/imperial-qore/SimpleFogSim/workflows/DeFog-Benchmarks/badge.svg)](https://github.com/imperial-qore/SimpleFogSim/actions)
 <br>
-![Docker pulls yolo](https://img.shields.io/docker/pulls/shreshthtuli/yolo?label=docker%20pulls%3A%20yolo)
-![Docker pulls pocketsphinx](https://img.shields.io/docker/pulls/shreshthtuli/pocketsphinx?label=docker%20pulls%3A%20pocketsphinx)
-![Docker pulls aeneas](https://img.shields.io/docker/pulls/shreshthtuli/aeneas?label=docker%20pulls%3A%20aeneas)
+![Docker pulls yolo](https://img.shields.io/docker/pulls/shreshthtuli/yolo?label=yolo)
+![Docker pulls pocketsphinx](https://img.shields.io/docker/pulls/shreshthtuli/pocketsphinx?label=pocketsphinx)
+![Docker pulls aeneas](https://img.shields.io/docker/pulls/shreshthtuli/aeneas?label=aeneas)
 <br>
-![Docker pulls mnist_layer](https://img.shields.io/docker/pulls/shreshthtuli/mnist_layer?label=docker%20pulls%3A%20mnist_layer)
-![Docker pulls fashionmnist_layer](https://img.shields.io/docker/pulls/shreshthtuli/fashionmnist_layer?label=docker%20pulls%3A%20fashionmnist_layer)
-![Docker pulls cifar100_layer](https://img.shields.io/docker/pulls/shreshthtuli/cifar100_layer?label=docker%20pulls%3A%20cifar100_layer)
+![Docker pulls mnist_layer](https://img.shields.io/docker/pulls/shreshthtuli/mnist_layer?label=mnist_layer)
+![Docker pulls fashionmnist_layer](https://img.shields.io/docker/pulls/shreshthtuli/fashionmnist_layer?label=fashionmnist_layer)
+![Docker pulls cifar100_layer](https://img.shields.io/docker/pulls/shreshthtuli/cifar100_layer?label=cifar100_layer)
 <br>
-![Docker pulls mnist_semantic](https://img.shields.io/docker/pulls/shreshthtuli/mnist_semantic?label=docker%20pulls%3A%20mnist_semantic)
-![Docker pulls fashionmnist_semantic](https://img.shields.io/docker/pulls/shreshthtuli/fashionmnist_semantic?label=docker%20pulls%3A%20fashionmnist_semantic)
-![Docker pulls cifar100_semantic](https://img.shields.io/docker/pulls/shreshthtuli/cifar100_semantic?label=docker%20pulls%3A%20cifar100_semantic)
+![Docker pulls mnist_semantic](https://img.shields.io/docker/pulls/shreshthtuli/mnist_semantic?label=mnist_semantic)
+![Docker pulls fashionmnist_semantic](https://img.shields.io/docker/pulls/shreshthtuli/fashionmnist_semantic?label=fashionmnist_semantic)
+![Docker pulls cifar100_semantic](https://img.shields.io/docker/pulls/shreshthtuli/cifar100_semantic?label=cifar100_semantic)
 
 # COSCO Framework
 
