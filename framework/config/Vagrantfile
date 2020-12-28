@@ -1,7 +1,7 @@
 servers=[
 	{
 		:hostname => 'vm1',
-		:ip => '192.168.0.2',
+		:ip => '192.168.122.2',
 		:box => 'ubuntu/bionic64',
 		:ram => 4096,
 		:cpu => 2,
@@ -9,7 +9,7 @@ servers=[
 	},
 	{
 		:hostname => 'vm2',
-		:ip => '192.168.0.3',
+		:ip => '192.168.122.3',
 		:box => 'ubuntu/bionic64',
 		:ram => 8192,
 		:cpu => 4,
@@ -18,7 +18,7 @@ servers=[
 ]
 
 
-agent_path='C:/Users/SHRESHTH/Desktop/COSCO/framework/agent'
+agent_path='C:/Users/Shreshth/Desktop/COSCO/framework/agent'
 
 Vagrant.configure(2) do |config|
     servers.each do |machine|

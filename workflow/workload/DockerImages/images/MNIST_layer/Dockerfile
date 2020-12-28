@@ -20,4 +20,4 @@ RUN \
     
 COPY assets assets
 
-CMD [ "python", "./main.py" ]
+CMD [ "python3", "./main.py" ]
