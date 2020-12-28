@@ -25,8 +25,31 @@ jobs:
         - name: Get the version
           id: vars
           run: echo ::set-output name=tag::$(echo ${GITHUB_REF:10})
-        - name: Build the MNIST_layer image
+          
+        - name: Build the mnist_layer image
           run: docker build -t shreshthtuli/mnist_layer workflow/workload/DockerImages/images/MNIST_layer/
-        - name: Push the MNIST_layer image
+        - name: Push the mnist_layer image
           run: docker push shreshthtuli/mnist_layer
+        - name: Build the mnist_semantic image
+          run: docker build -t shreshthtuli/mnist_semantic workflow/workload/DockerImages/images/MNIST_semantic/
+        - name: Push the mnist_semantic image
+          run: docker push shreshthtuli/mnist_semantic
+
+        - name: Build the fashionmnist_layer image
+          run: docker build -t shreshthtuli/fashionmnist_layer workflow/workload/DockerImages/images/FashionMNIST_layer/
+        - name: Push the fashionmnist_layer image
+          run: docker push shreshthtuli/fashionmnist_layer
+        - name: Build the fashionmnist_semantic image
+          run: docker build -t shreshthtuli/fashionmnist_semantic workflow/workload/DockerImages/images/FashionMNIST_semantic/
+        - name: Push the fashionmnist_semantic image
+          run: docker push shreshthtuli/fashionmnist_semantic
+
+        - name: Build the cifar100_layer image
+          run: docker build -t shreshthtuli/cifar100_layer workflow/workload/DockerImages/images/CIFAR100_layer/
+        - name: Push the cifar100_layer image
+          run: docker push shreshthtuli/cifar100_layer
+        - name: Build the cifar100_semantic image
+          run: docker build -t shreshthtuli/cifar100_semantic workflow/workload/DockerImages/images/CIFAR100_semantic/
+        - name: Push the cifar100_semantic image
+          run: docker push shreshthtuli/cifar100_semantic
 
