@@ -16,7 +16,7 @@ RUN \
     wget
 
 RUN \
-    pip install torch torchvision 
+    pip3 install torch torchvision 
     
 RUN \
     cd Aeneas/aeneas && \
