@@ -1,7 +1,5 @@
 FROM ubuntu:18.04
 
-ADD main.py /
-
 WORKDIR /root
 
 RUN \
@@ -19,5 +17,6 @@ RUN \
     pip3 install torch torchvision 
     
 COPY assets assets
+COPY main.py main.py
 
 CMD [ "python3", "./main.py" ]
