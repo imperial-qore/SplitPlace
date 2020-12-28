@@ -6,6 +6,14 @@
 ![Docker pulls yolo](https://img.shields.io/docker/pulls/shreshthtuli/yolo?label=docker%20pulls%3A%20yolo)
 ![Docker pulls pocketsphinx](https://img.shields.io/docker/pulls/shreshthtuli/pocketsphinx?label=docker%20pulls%3A%20pocketsphinx)
 ![Docker pulls aeneas](https://img.shields.io/docker/pulls/shreshthtuli/aeneas?label=docker%20pulls%3A%20aeneas)
+<br>
+![Docker pulls mnist_layer](https://img.shields.io/docker/pulls/shreshthtuli/mnist_layer?label=docker%20pulls%3A%20mnist_layer)
+![Docker pulls fashionmnist_layer](https://img.shields.io/docker/pulls/shreshthtuli/fashionmnist_layer?label=docker%20pulls%3A%20fashionmnist_layer)
+![Docker pulls cifar100_layer](https://img.shields.io/docker/pulls/shreshthtuli/cifar100_layer?label=docker%20pulls%3A%20cifar100_layer)
+<br>
+![Docker pulls mnist_semantic](https://img.shields.io/docker/pulls/shreshthtuli/mnist_semantic?label=docker%20pulls%3A%20mnist_semantic)
+![Docker pulls fashionmnist_semantic](https://img.shields.io/docker/pulls/shreshthtuli/fashionmnist_semantic?label=docker%20pulls%3A%20fashionmnist_semantic)
+![Docker pulls cifar100_semantic](https://img.shields.io/docker/pulls/shreshthtuli/cifar100_semantic?label=docker%20pulls%3A%20cifar100_semantic)
 
 # COSCO Framework
 
