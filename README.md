@@ -3,11 +3,13 @@
 [![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fimperial-qore%2FCOSCO&count_bg=%23FFC401&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false)](https://hits.seeyoufarm.com)
 <br>
 [![Actions Status](https://github.com/imperial-qore/COSCO/workflows/DeFog-Benchmarks/badge.svg)](https://github.com/imperial-qore/COSCO/actions)
+<br>
 ![Docker pulls yolo](https://img.shields.io/docker/pulls/shreshthtuli/yolo?label=yolo)
 ![Docker pulls pocketsphinx](https://img.shields.io/docker/pulls/shreshthtuli/pocketsphinx?label=pocketsphinx)
 ![Docker pulls aeneas](https://img.shields.io/docker/pulls/shreshthtuli/aeneas?label=aeneas)
 <br>
 [![Actions Status](https://github.com/imperial-qore/COSCO/workflows/SplitPlace-Benchmarks/badge.svg)](https://github.com/imperial-qore/COSCO/actions)
+<br>
 ![Docker pulls mnist_layer](https://img.shields.io/docker/pulls/shreshthtuli/mnist_layer?label=mnist_layer)
 ![Docker pulls fashionmnist_layer](https://img.shields.io/docker/pulls/shreshthtuli/fashionmnist_layer?label=fashionmnist_layer)
 ![Docker pulls cifar100_layer](https://img.shields.io/docker/pulls/shreshthtuli/cifar100_layer?label=cifar100_layer)
