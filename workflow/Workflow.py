@@ -1,10 +1,14 @@
-from framework.node.Node import *
-from framework.task.Task import *
-from framework.server.controller import *
+from workflow.node.Node import *
+from workflow.task.Task import *
+from workflow.server.controller import *
 from time import time, sleep
 from pdb import set_trace as bp
 import multiprocessing
 from joblib import Parallel, delayed
+import shutil
+from copy import deepcopy
+import torch
+import torch.nn.functional as F
 
 num_cores = multiprocessing.cpu_count()
 
@@ -70,11 +74,13 @@ class Workflow():
 				return container
 
 	def addContainerList(self, containerInfoList):
-		deployed = containerInfoList[:min(len(containerInfoList), self.containerlimit-self.getNumActiveContainers())]
+		maxdeploy = min(len(containerInfoList), self.containerlimit-self.getNumActiveContainers())
 		deployedContainers = []
-		for CreationID, CreationInterval, SLA, Application in deployed:
-			dep = self.addContainer(CreationID, CreationInterval, SLA, Application)
-			deployedContainers.append(dep)
+		for WorkflowID, CreationID, interval, split, dependentOn, SLA, application in containerInfoList:
+			if dependentOn is None or dependentOn in self.destroyedccids:
+				dep = self.addContainerInit(WorkflowID, CreationID, interval, split, dependentOn, SLA, application)
+				deployedContainers.append(dep)
+				if len(deployedContainers) >= maxdeploy: break
 		return [container.id for container in deployedContainers]
 
 	def getContainersOfHost(self, hostID):
@@ -150,14 +156,48 @@ class Workflow():
 			host.updateUtilizationMetrics()
 		return migrations
 
+	def checkWorkflowOutput(self, WorkflowID):
+		wid = str(WorkflowID)
+		if 'layer' in self.activeworkflows[WorkflowID]['application']:
+		    with open('tmp/'+wid+'/'+wid+'_3', 'rb') as f:
+		        output = pickle.load(f)
+		else:
+			outputs = []
+			with split in range(5):
+			    with open('tmp/'+wid+'/'+wid+'_'+str(split), 'rb') as f:
+			        outputs.append(pickle.load(f))
+			output = F.log_softmax(torch.cat(outputs, dim=1), dim=1)
+	    with open('tmp/'+str(WorkflowID)+'/target.pt', 'rb') as f:
+	        target = pickle.load(f)
+	    pred = output.argmax(dim=1, keepdim=True)
+	    correct = pred.eq(target.view_as(pred)).sum().item()
+	    total = int(target.shape[0])
+	    return correct, total
+
+	def destroyWorkflow(self):
+		for WorkflowID in self.activeworkflows:
+			allDestroyed = True
+			for ccids in self.activeworkflows[WorkflowID]['ccids']:
+				if ccid not in self.destroyedccids:
+					allDestroyed = False
+			if allDestroyed:
+				correct, total = self.checkWorkflowOutput(WorkflowID)
+				shutil.rmtree('tmp/'+WorkflowID+'/')
+				self.destroyedworkflows[WorkflowID] = deepcopy(self.activeworkflows[WorkflowID])
+				self.destroyedworkflows[WorkflowID]['destroyAt'] = self.interval
+				self.destroyedworkflows[WorkflowID]['result'] = (correct, total)
+				del self.activeworkflows[WorkflowID]
+
 	def destroyCompletedContainers(self):
 		destroyed = []
 		for i, container in enumerate(self.containerlist):
 			if container and not container.active:
 				container.destroy()
+				self.destroyedccids.add(container.creationID)
 				self.containerlist[i] = None
 				self.inactiveContainers.append(container)
 				destroyed.append(container)
+		self.destroyWorkflow()
 		return destroyed
 
 	def getNumActiveContainers(self):
@@ -191,8 +231,9 @@ class Workflow():
 	def parallelizedFunc(self, i):
 		cid, hid = i
 		container = self.getContainerByID(cid)
+		################# Disabled Migration ###################
 		if self.containerlist[cid].hostid != -1:
-			container.allocateAndrestore(hid)
+		# 	container.allocateAndrestore(hid)
 		else:
 			container.allocateAndExecute(hid)
 		return container

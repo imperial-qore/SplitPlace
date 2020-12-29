@@ -8,6 +8,7 @@ import configparser
 import docker 
 import codes
 import json
+import os
 
 # Reference: https://docker-py.readthedocs.io/en/stable/api.html
 
@@ -51,8 +52,11 @@ class DockerClient():
         return rc, json.dumps({"rc": rc})
     
     # TODO: return finish time UTC
-    def delete(self, name):
+    def delete(self, config):
+        name = config["name"]
+        outputFileName = config["outputFileName"]
         rc = codes.SUCCESS
+        subprocess.call(["sudo","rm","-rf","/tmp/container_data/"+outputFileName])
         try:
             self.dclient1.stop(name)
             self.dclient1.remove_container(name)

@@ -14,8 +14,8 @@ class Task():
 		self.creationID = creationID
 		self.split = split
 		self.dependentOn = dependentOn
-		self.inputFileName = 'data.pt' if ('semantic' in self.application or self.split == 0) else str(self.workflowID)+"_"+str(self.split-1)+"_"+str(self.dependentOn)
-		self.outputFileName = str(self.workflowID)+"_"+str(self.split)+"_"+str(self.creationID)
+		self.inputFileName = 'data.pt' if ('semantic' in self.application or self.split == 0) else str(self.workflowID)+"_"+str(self.split-1)
+		self.outputFileName = str(self.workflowID)+"_"+str(self.split)
 		# Initial utilization metrics
 		self.ips = 0
 		self.ram = RAM(0, 0, 0)
