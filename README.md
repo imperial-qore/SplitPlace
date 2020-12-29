@@ -1,7 +1,7 @@
-[![License](https://img.shields.io/badge/License-BSD%203--Clause-red.svg)](https://github.com/imperial-qore/COSCO/blob/master/LICENSE)
+[![License](https://img.shields.io/badge/License-BSD%203--Clause-red.svg)](https://github.com/imperial-qore/SplitPlace/blob/master/LICENSE)
 ![Python 3.7, 3.8](https://img.shields.io/badge/python-3.7%20%7C%203.8-blue.svg)
 [![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fimperial-qore%2FSplitPlace&count_bg=%23FFC401&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false)](https://hits.seeyoufarm.com)
-[![Actions Status](https://github.com/imperial-qore/COSCO/workflows/SplitPlace-Benchmarks/badge.svg)](https://github.com/imperial-qore/COSCO/actions)
+[![Actions Status](https://github.com/imperial-qore/SplitPlace/workflows/SplitPlace-Benchmarks/badge.svg)](https://github.com/imperial-qore/SplitPlace/actions)
 <br>
 ![Docker pulls mnist_layer](https://img.shields.io/docker/pulls/shreshthtuli/mnist_layer?label=mnist_layer)
 ![Docker pulls fashionmnist_layer](https://img.shields.io/docker/pulls/shreshthtuli/fashionmnist_layer?label=fashionmnist_layer)
