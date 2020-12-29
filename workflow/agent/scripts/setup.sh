@@ -33,3 +33,5 @@ sudo docker pull shreshthtuli/fashionmnist_layer
 sudo docker pull shreshthtuli/fashionmnist_semantic
 sudo docker pull shreshthtuli/cifar100_layer
 sudo docker pull shreshthtuli/cifar100_semantic
+
+sudo mkdir /tmp/container_data/

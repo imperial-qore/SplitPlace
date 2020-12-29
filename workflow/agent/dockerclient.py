@@ -21,8 +21,11 @@ class DockerClient():
         rc = codes.SUCCESS
         name = config["name"]
         image = config["image"]
+        inputFileName = config["inputFileName"]
+        outputFileName = config["outputFileName"]
         try:
-            containerid = self.dclient.containers.run(image=image, tty=True, detach=True, name=name)
+            cmd = "docker run -itd --name "+container_name+" -v /tmp/container_data/:/data "+container_image+" 'python3' 'main.py' '"+inputFileName+"' '"+outputFileName+"'"
+            cid = subprocess.Popen(cmd, shell=True,stdout=subprocess.PIPE).communicate()[0].decode('utf-8').strip()
         except requests.exceptions.ConnectionError as err:
             rc = codes.FAILED
         return rc, json.dumps({"rc": rc})

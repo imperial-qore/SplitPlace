@@ -11,39 +11,20 @@ from time import time
 from subprocess import call
 from os import system, rename
 
-# Framework imports
-from framework.Framework import *
-from framework.database.Database import *
-from framework.datacenter.Datacenter_Setup import *
-from framework.datacenter.Datacenter import *
-from framework.workload.DeFogWorkload import *
+# Workflow imports
+from workflow.Workflow import *
+from workflow.database.Database import *
+from workflow.datacenter.Datacenter_Setup import *
+from workflow.datacenter.Datacenter import *
+from workflow.workload.SplitPlaceWorkfload import *
 
-# Simulator imports
-from simulator.Simulator import *
-from simulator.environment.AzureFog import *
-from simulator.environment.BitbrainFog import *
-from simulator.workload.BitbrainWorkload_GaussianDistribution import *
-from simulator.workload.BitbrainWorkload2 import *
+# Splitnet decision imports
+from workflow.splitnet.Random import RandomDecider
+from workflow.splitnet.Layer_Only import LayerOnlyDecider
+from workflow.splitnet.Semantic_Only import SemanticOnlyDecider
 
 # Scheduler imports
-from scheduler.IQR_MMT_Random import IQRMMTRScheduler
-from scheduler.MAD_MMT_Random import MADMMTRScheduler
 from scheduler.MAD_MC_Random import MADMCRScheduler
-from scheduler.LR_MMT_Random import LRMMTRScheduler
-from scheduler.Random_Random_FirstFit import RFScheduler
-from scheduler.Random_Random_LeastFull import RLScheduler
-from scheduler.RLR_MMT_Random import RLRMMTRScheduler
-from scheduler.Threshold_MC_Random import TMCRScheduler
-from scheduler.Random_Random_Random import RandomScheduler
-from scheduler.GA import GAScheduler
-from scheduler.GOBI import GOBIScheduler
-from scheduler.GOBI2 import GOBI2Scheduler
-from scheduler.DRL import DRLScheduler
-from scheduler.POND import PONDScheduler
-from scheduler.SOGOBI import SOGOBIScheduler
-from scheduler.SOGOBI2 import SOGOBI2Scheduler
-from scheduler.HGOBI import HGOBIScheduler
-from scheduler.HGOBI2 import HGOBI2Scheduler
 
 # Auxiliary imports
 from stats.Stats import *
@@ -71,43 +52,40 @@ DB_NAME = ''
 DB_HOST = ''
 DB_PORT = 0
 HOSTS_IP = []
-logFile = 'COSCO.log'
+logFile = 'SplitPlace.log'
 
 if len(sys.argv) > 1:
 	with open(logFile, 'w'): os.utime(logFile, None)
 
 def initalizeEnvironment(environment, logger):
-	if environment != '':
-		# Initialize the db
-		db = Database(DB_NAME, DB_HOST, DB_PORT)
+	# Initialize the db
+	db = Database(DB_NAME, DB_HOST, DB_PORT)
 
 	# Initialize simple fog datacenter
-	''' Can be SimpleFog, BitbrainFog, AzureFog // Datacenter '''
-	if environment != '':
-		datacenter = Datacenter(HOSTS_IP, environment, 'Virtual')
-	else:
-		datacenter = AzureFog(HOSTS)
+	''' Can be Datacenter '''
+	datacenter = Datacenter(HOSTS_IP, environment, 'Virtual')
 
 	# Initialize workload
-	''' Can be SWSD, BWGD, BWGD2 // DFW '''
-	if environment != '':
-		workload = DFW(NEW_CONTAINERS, 1.5, db)
-	else: 
-		workload = BWGD2(NEW_CONTAINERS, 1.5)
+	''' Can be SPW '''
+	workload = SPW(NEW_CONTAINERS, 1.5, db)
+
+	# Initialize splitnet decision moduele
+	''' Can be Random, SemanticOnly, LayerOnly '''
+	decider = RandomDecider()
 	
 	# Initialize scheduler
 	''' Can be LRMMTR, RF, RL, RM, Random, RLRMMTR, TMCR, TMMR, TMMTR, GA, GOBI (arg = 'energy_latency_'+str(HOSTS)) '''
-	scheduler = GOBIScheduler('energy_latency_'+str(HOSTS)) # DRLScheduler('energy_latency_'+str(HOSTS))
+	scheduler = MADMCRScheduler()
 
 	# Initialize Environment
 	hostlist = datacenter.generateHosts()
-	if environment != '':
-		env = Framework(scheduler, CONTAINERS, INTERVAL_TIME, hostlist, db, environment, logger)
-	else:
-		env = Simulator(TOTAL_POWER, ROUTER_BW, scheduler, CONTAINERS, INTERVAL_TIME, hostlist)
+	env = Worfklow(scheduler, decider, CONTAINERS, INTERVAL_TIME, hostlist, db, environment, logger)
 
 	# Execute first step
-	newcontainerinfos = workload.generateNewContainers(env.interval) # New containers info
+	newworkflowinfos = workload.generateNewWorkloads(env.interval)
+	workflowsplits = decider.decision(newworkflowinfos)
+	newcontainerinfos = workload.generateNewContainers(env.interval, newworkflowinfos, workflowsplits) # New containers info
+	env.addWorkflows(newcontainerinfos)
 	deployed = env.addContainersInit(newcontainerinfos) # Deploy new containers and get container IDs
 	start = time()
 	decision = scheduler.placement(deployed) # Decide placement using container ids

@@ -40,7 +40,7 @@ class SPW(Workload):
             pickle.dump(data, f)
         with open(path+'target.pt', 'wb') as f:
             pickle.dump(target, f)
-        
+
     def generateNewWorkflows(self, interval):
         workflowlist = []
         workflows = ['MNIST', 'FashionMNIST', 'CIFAR100']
@@ -60,7 +60,7 @@ class SPW(Workload):
             decision = workflowDecision[i]
             for split in range(4 if 'layer' in decision else 5):
                 CreationID = self.creation_id
-                application = workflow+'_'+decision
+                application = 'shreshthtuli/'+workflow.lower()+'_'+decision
                 dependentOn = CreationID - 1 if ('layer' in decision and split > 0) else None 
                 workloadlist.append((WorkflowID, CreationID, interval, split, dependentOn, SLA, application))
                 self.creation_id += 1

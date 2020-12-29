@@ -24,17 +24,31 @@ class RequestHandler():
             "opcode": opcode,
             "image": json_body["fields"]["image"],
             "host_ip": hostIP,
-            "name": json_body["fields"]["name"]
+            "name": json_body["fields"]["name"],
+            "inputFileName": json_body["fields"]["inputFileName"],
+            "outputFileName": json_body["fields"]["outputFileName"]
         }
         rc = rclient.HandleRequest(payload, hostIP, self.env)
         self.env.logger.debug(payload)
         self.env.logger.debug("Response from "+opcode+"d container", rc)
         return rc, time() - start
 
+    def copy_to_host(self, hostIP, filename):
+        uname = 'vagrant' if self.env.environment == 'Vagrant' else 'ansible'
+        subprocess.call(["scp", "-o", "StrictHostKeyChecking=no", "-i", "~/agent/id_rsa",
+        "tmp/"+filename, uname+"@"+hostIP+":/tmp/container_data/"])
+
+    def copy_from_host(self, hostIP, filename):
+        uname = 'vagrant' if self.env.environment == 'Vagrant' else 'ansible'
+        subprocess.call(["scp", "-o", "StrictHostKeyChecking=no", "-i", "~/agent/id_rsa",
+        uname+"@"+hostIP+":/tmp/container_data/"+filename, "tmp/"])
+
     def create(self, json_body, hostIP):
+        self.copy_to_host(hostIP, json_body["fields"]["inputFileName"])
         return self.basic_call(json_body, "create", hostIP)
         
     def destroy(self, json_body, hostIP):
+        self.copy_to_host(hostIP, json_body["fields"]["outputFileName"])
         return self.basic_call(json_body, "delete", hostIP)
 
     def gethostStat(self, hostIP):

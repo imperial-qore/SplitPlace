@@ -16,7 +16,7 @@ import psutil
 import time
 import re
 
-logging.basicConfig(filename='COSCO.log', level=logging.DEBUG,
+logging.basicConfig(filename='SplitPlace.log', level=logging.DEBUG,
                             format='%(asctime)s - %(levelname)s - %(message)s')
 
 class RequestRouter():

@@ -8,9 +8,14 @@ class Task():
 	# IPS = ips requirement
 	# RAM = ram requirement in MB
 	# Size = container size in MB
-	def __init__(self, ID, creationID, creationInterval, sla, application, Framework, HostID = -1):
+	def __init__(self, ID, WorkflowID, CreationID, creationInterval, split, dependentOn, SLA, application, Framework, HostID = -1):
 		self.id = ID
+		self.workflowID = WorkflowID
 		self.creationID = creationID
+		self.split = split
+		self.dependentOn = dependentOn
+		self.inputFileName = 'data.pt' if ('semantic' in self.application or self.split == 0) else str(self.workflowID)+"_"+str(self.split-1)+"_"+str(self.dependentOn)
+		self.outputFileName = str(self.workflowID)+"_"+str(self.split)+"_"+str(self.creationID)
 		# Initial utilization metrics
 		self.ips = 0
 		self.ram = RAM(0, 0, 0)
@@ -45,7 +50,7 @@ class Task():
 							"fields":
 									{
 										"Host_id": self.hostid,
-										"name": str(self.creationID)+"_"+str(self.id),
+										"name": str(self.workflowID)+"_"+str(self.split)+"_"+str(self.creationID)+"_"+str(self.id),
 										"image": self.application,
 										"Active": self.active,
 										"totalExecTime": self.totalExecTime,
@@ -60,6 +65,8 @@ class Task():
 										"DISK_size": self.disk.size,
 										"DISK_read": self.disk.read,
 										"DISK_write": self.disk.write,
+										"inputFileName": self.inputFileName,
+										"outputFileName": self.outputFileName
 									}
 						}
 		self.env.db.insert([self.json_body])

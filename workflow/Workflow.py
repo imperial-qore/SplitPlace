@@ -12,10 +12,12 @@ class Workflow():
 	# Total power in watt
 	# Total Router Bw
 	# Interval Time in seconds
-	def __init__(self, Scheduler, ContainerLimit, IntervalTime, hostinit, database, env, logger):
+	def __init__(self, Scheduler, Decider, ContainerLimit, IntervalTime, hostinit, database, env, logger):
 		self.hostlimit = len(hostinit)
 		self.scheduler = Scheduler
 		self.scheduler.setEnvironment(self)
+		self.decider = Decider
+		self.decider.setEnvironment(self)
 		self.containerlimit = ContainerLimit
 		self.hostlist = []
 		self.containerlist = []
@@ -23,6 +25,9 @@ class Workflow():
 		self.interval = 0
 		self.db = database
 		self.inactiveContainers = []
+		self.destroyedccids = {}
+		self.activeworkflows = {}
+		self.destroyedworkflows = {}
 		self.logger = logger
 		self.stats = None
 		self.environment = env
@@ -41,17 +46,19 @@ class Workflow():
 		for IP, IPS, RAM, Disk, Bw, Powermodel in hostList:
 			self.addHostInit(IP, IPS, RAM, Disk, Bw, Powermodel)
 
-	def addContainerInit(self, CreationID, CreationInterval, SLA, Application):
-		container = Task(len(self.containerlist), CreationID, CreationInterval, SLA, Application, self, HostID = -1)
+	def addContainerInit(self, WorkflowID, CreationID, interval, split, dependentOn, SLA, application):
+		container = Task(len(self.containerlist), WorkflowID, CreationID, interval, split, dependentOn, SLA, application, self, HostID = -1)
 		self.containerlist.append(container)
 		return container
 
 	def addContainerListInit(self, containerInfoList):
-		deployed = containerInfoList[:min(len(containerInfoList), self.containerlimit-self.getNumActiveContainers())]
+		maxdeploy = min(len(containerInfoList), self.containerlimit-self.getNumActiveContainers())
 		deployedContainers = []
-		for CreationID, CreationInterval, SLA, Application in deployed:
-			dep = self.addContainerInit(CreationID, CreationInterval, SLA, Application)
-			deployedContainers.append(dep)
+		for WorkflowID, CreationID, interval, split, dependentOn, SLA, application in containerInfoList:
+			if dependentOn is None or dependentOn in self.destroyedccids:
+				dep = self.addContainerInit(WorkflowID, CreationID, interval, split, dependentOn, SLA, application)
+				deployedContainers.append(dep)
+				if len(deployedContainers) >= maxdeploy: break
 		self.containerlist += [None] * (self.containerlimit - len(self.containerlist))
 		return [container.id for container in deployedContainers]
 
@@ -93,6 +100,16 @@ class Workflow():
 		for decision in migrations:
 			if decision[0] in containerIDs: creationIDs.append(self.containerlist[decision[0]].creationID)
 		return creationIDs
+
+	def addWorkflows(self, containerInfoList):
+		for WorkflowID, CreationID, interval, _, _, SLA, application in containerInfoList:
+			if WorkflowID not in self.activeworkflows:
+				self.activeworkflows[WorkflowID] = ('ccids': [CreationID], 
+					'createAt': interval, 
+					'sla': SLA, 
+					'application': application)
+			elif CreationID not in self.activeworkflows[WorkflowID]['ccids']:
+				self.activeworkflows[WorkflowID]['ccids'].append(CreationID)
 
 	def getPlacementPossible(self, containerID, hostID):
 		container = self.containerlist[containerID]
