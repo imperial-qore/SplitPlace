@@ -53,6 +53,7 @@ def setupVLANEnvironment(cfg, mode):
     for ip in HOST_IPS:
         res = call(["ssh", "-o", "StrictHostKeyChecking=no", "-i", "workflow/install_scripts/ssh_keys/id_rsa", uname+"@"+ip, "~/agent/scripts/delete.sh"], shell=True, stdout=PIPE, stderr=PIPE)  
         res = call(["ssh", "-o", "StrictHostKeyChecking=no", "-i", "workflow/install_scripts/ssh_keys/id_rsa", "-t", uname+"@"+ip, "sudo service docker restart"], shell=True, stdout=PIPE, stderr=PIPE)  
+        res = call(["ssh", "-o", "StrictHostKeyChecking=no", "-i", "workflow/install_scripts/ssh_keys/id_rsa", "-t", uname+"@"+ip, "sudo rm -rf ~/container_data/*"], shell=True, stdout=PIPE, stderr=PIPE)     
     return HOST_IPS
 
 def destroyVLANEnvironment(cfg, mode):
@@ -90,6 +91,8 @@ def setupVagrantEnvironment(cfg, mode):
     uname = "vagrant"
     for ip in HOST_IPS:
         res = call(["ssh", "-o", "StrictHostKeyChecking=no", "-i", "workflow/install_scripts/ssh_keys/id_rsa", uname+"@"+ip, "~/agent/scripts/delete.sh"], shell=True, stdout=PIPE, stderr=PIPE)  
+        res = call(["ssh", "-o", "StrictHostKeyChecking=no", "-i", "workflow/install_scripts/ssh_keys/id_rsa", "-t", uname+"@"+ip, "sudo service docker restart"], shell=True, stdout=PIPE, stderr=PIPE)  
+        res = call(["ssh", "-o", "StrictHostKeyChecking=no", "-i", "workflow/install_scripts/ssh_keys/id_rsa", "-t", uname+"@"+ip, "sudo rm -rf ~/container_data/*"], shell=True, stdout=PIPE, stderr=PIPE)         
     return HOST_IPS
 
 def destroyVagrantEnvironment(cfg, mode):

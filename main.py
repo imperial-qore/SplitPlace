@@ -47,7 +47,7 @@ HOSTS = 10 * 5 if opts.env == '' else 10
 CONTAINERS = HOSTS
 TOTAL_POWER = 1000
 ROUTER_BW = 10000
-INTERVAL_TIME = 300 # seconds
+INTERVAL_TIME = 60 # seconds
 NEW_CONTAINERS = 0 if HOSTS == 10 else 5
 DB_NAME = ''
 DB_HOST = ''
@@ -101,9 +101,9 @@ def initalizeEnvironment(environment, logger):
 	# Initialize stats
 	stats = Stats(env, workload, datacenter, scheduler)
 	stats.saveStats(deployed, migrations, [], deployed, decision, schedulingTime)
-	return datacenter, workload, scheduler, env, stats
+	return datacenter, workload, scheduler, decider, env, stats
 
-def stepSimulation(workload, scheduler, env, stats):
+def stepSimulation(workload, scheduler, decider, env, stats):
 	newworkflowinfos = workload.generateNewWorkflows(env.interval)
 	workflowsplits = decider.decision(newworkflowinfos)
 	newcontainerinfos = workload.generateNewContainers(env.interval, newworkflowinfos, workflowsplits) # New containers info
@@ -193,11 +193,11 @@ if __name__ == '__main__':
 			print(HOSTS_IP)
 		# exit()
 
-	datacenter, workload, scheduler, env, stats = initalizeEnvironment(env, logger)
+	datacenter, workload, scheduler, decider, env, stats = initalizeEnvironment(env, logger)
 
 	for step in range(NUM_SIM_STEPS):
 		print(color.BOLD+"Simulation Interval:", step, color.ENDC)
-		stepSimulation(workload, scheduler, env, stats)
+		stepSimulation(workload, scheduler, decider, env, stats)
 		if env != '' and step % 10 == 0: saveStats(stats, datacenter, workload, env, end = False)
 
 	if opts.env != '':
