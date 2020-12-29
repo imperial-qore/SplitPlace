@@ -12,6 +12,7 @@ import logging
 import workflow.server.restClient as rclient
 from time import time
 from datetime import datetime
+import subprocess
 
 class RequestHandler():
     def __init__(self, database, env):
@@ -33,22 +34,22 @@ class RequestHandler():
         self.env.logger.debug("Response from "+opcode+"d container", rc)
         return rc, time() - start
 
-    def copy_to_host(self, hostIP, filename):
+    def copy_to_host(self, hostIP, filename, workflowID):
         uname = 'vagrant' if self.env.environment == 'Vagrant' else 'ansible'
-        subprocess.call(["scp", "-o", "StrictHostKeyChecking=no", "-i", "~/agent/id_rsa",
-        "tmp/"+filename, uname+"@"+hostIP+":/tmp/container_data/"])
+        subprocess.call(["scp", "-o", "StrictHostKeyChecking=no", "-i", "workflow/install_scripts/ssh_keys/id_rsa",
+        "tmp/"+str(workflowID)+'/'+filename, uname+"@"+hostIP+":~/container_data/"])
 
-    def copy_from_host(self, hostIP, filename):
+    def copy_from_host(self, hostIP, filename, workflowID):
         uname = 'vagrant' if self.env.environment == 'Vagrant' else 'ansible'
         subprocess.call(["scp", "-o", "StrictHostKeyChecking=no", "-i", "~/agent/id_rsa",
-        uname+"@"+hostIP+":/tmp/container_data/"+filename, "tmp/"])
+        uname+"@"+hostIP+":~/container_data/"+filename, "tmp/"+str(workflowID)])
 
     def create(self, json_body, hostIP):
-        self.copy_to_host(hostIP, json_body["fields"]["inputFileName"])
+        self.copy_to_host(hostIP, json_body["fields"]["inputFileName"], json_body["fields"]["workflowID"])
         return self.basic_call(json_body, "create", hostIP)
         
     def destroy(self, json_body, hostIP):
-        self.copy_to_host(hostIP, json_body["fields"]["outputFileName"])
+        self.copy_to_host(hostIP, json_body["fields"]["outputFileName"], json_body["fields"]["workflowID"])
         return self.basic_call(json_body, "delete", hostIP)
 
     def gethostStat(self, hostIP):

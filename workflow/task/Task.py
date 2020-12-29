@@ -11,9 +11,10 @@ class Task():
 	def __init__(self, ID, WorkflowID, CreationID, creationInterval, split, dependentOn, SLA, application, Framework, HostID = -1):
 		self.id = ID
 		self.workflowID = WorkflowID
-		self.creationID = creationID
+		self.creationID = CreationID
 		self.split = split
 		self.dependentOn = dependentOn
+		self.application = application
 		self.inputFileName = 'data.pt' if ('semantic' in self.application or self.split == 0) else str(self.workflowID)+"_"+str(self.split-1)
 		self.outputFileName = str(self.workflowID)+"_"+str(self.split)
 		# Initial utilization metrics
@@ -21,7 +22,7 @@ class Task():
 		self.ram = RAM(0, 0, 0)
 		self.bw = Bandwidth(0, 0)
 		self.disk = Disk(0, 0, 0)
-		self.sla = sla
+		self.sla = SLA
 		self.hostid = HostID
 		self.json_body = {}
 		self.env = Framework
@@ -33,7 +34,6 @@ class Task():
 		self.totalMigrationTime = 0
 		self.active = True
 		self.destroyAt = -1
-		self.application = application
 		self.execError = ""
 		self.containerDBInsert()
 		
@@ -66,7 +66,8 @@ class Task():
 										"DISK_read": self.disk.read,
 										"DISK_write": self.disk.write,
 										"inputFileName": self.inputFileName,
-										"outputFileName": self.outputFileName
+										"outputFileName": self.outputFileName,
+										"workflowID": self.workflowID
 									}
 						}
 		self.env.db.insert([self.json_body])

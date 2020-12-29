@@ -39,11 +39,11 @@ class Datacenter():
     def generateHosts(self):
         print(color.HEADER+"Obtaining host information and generating hosts"+color.ENDC)
         hosts = []
-        with open('framework/config/'+self.env+'_config.json', "r") as f:
+        with open('workflow/config/'+self.env+'_config.json', "r") as f:
             config = json.load(f)
         powermodels = [server["powermodel"] for server in config[self.env.lower()]['servers']]
         if self.env_type == 'Virtual':
-            with open('framework/server/scripts/instructions_arch.json') as f:
+            with open('workflow/server/scripts/instructions_arch.json') as f:
                 arch_dict = json.load(f)
             instructions = arch_dict[platform.machine()]
         outputHostsData = Parallel(n_jobs=num_cores)(delayed(self.parallelizedFunc)(i) for i in self.hosts)
@@ -51,7 +51,7 @@ class Datacenter():
             IP = self.hosts[i]
             logging.error("Host details collected from: {}".format(IP))
             print(color.BOLD+IP+color.ENDC, data)
-            IPS = (instructions * config[self.env.lower()]['servers'][i]['cpu'])/(float(data['clock']) * 1000000) if self.env_type == 'Virtual' else data['MIPS']
+            IPS = 2000 * config[self.env.lower()]['servers'][i]['cpu'] # (instructions * config[self.env.lower()]['servers'][i]['cpu'])/(float(data['clock']) * 1000000) if self.env_type == 'Virtual' else data['MIPS']
             Power = eval(powermodels[i]+"()")
             Ram = RAM(data['Total_Memory'], data['Ram_read'], data['Ram_write'])
             Disk_ = Disk(data['Total_Disk'], data['Disk_read'], data['Disk_write'])

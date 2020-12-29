@@ -12,11 +12,15 @@
 
 # SplitPlace Framework
 
-SplitPlace is a container orchestration framework for dynamic scheudling and decision making in resource constrained edge environments. SplitPlace decides whether to use semantic or layer wise splits of neural network applications with latency and accuracy critical user requirements on distributed setups with low memory legacy devices.
+SplitPlace is a container orchestration framework for dynamic scheduling and decision making in resource constrained edge environments. SplitPlace decides whether to use semantic or layer wise splits of neural network applications with latency and accuracy critical user requirements on distributed setups with low memory legacy devices.
 
 ## Wiki
 Access the [wiki](https://github.com/imperial-qore/SplitPlace/wiki) for installation instructions and replication of results.
 
+## Todo
+1. Add wiki for benchmarks: (a) explain layer and semantic splits, (b) describe IO, (c) describe code and datasets (MNIST, FashionMNIST and CIFAR100).
+2. Explain data pipeline strategy.
+3. Update Workflow engine.
 
 ## License
 

@@ -5,8 +5,7 @@ import re
 from subprocess import call, Popen, PIPE
 from getpass import getpass
 from utils.Utils import *
-
-BASE_IP = '192.168.122.'
+from workflow.agent.codes import BASE_IP
 
 def setup(cfg):
     # For ansible setup
@@ -94,6 +93,6 @@ def setupVagrantEnvironment(cfg, mode):
     return HOST_IPS
 
 def destroyVagrantEnvironment(cfg, mode):
-    os.chdir(r"workflow/config/") 
     if mode in [0, 3]:
+        os.chdir(r"workflow/config/") 
         call(["vagrant", "destroy -f"])

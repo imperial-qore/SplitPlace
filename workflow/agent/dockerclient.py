@@ -25,7 +25,7 @@ class DockerClient():
         inputFileName = config["inputFileName"]
         outputFileName = config["outputFileName"]
         try:
-            cmd = "docker run -itd --name "+container_name+" -v /tmp/container_data/:/data "+container_image+" 'python3' 'main.py' '"+inputFileName+"' '"+outputFileName+"'"
+            cmd = "docker run -itd --name "+name+" -v ~/container_data/:/data "+image+" 'python3' 'main.py' '"+inputFileName+"' '"+outputFileName+"'"
             cid = subprocess.Popen(cmd, shell=True,stdout=subprocess.PIPE).communicate()[0].decode('utf-8').strip()
         except requests.exceptions.ConnectionError as err:
             rc = codes.FAILED

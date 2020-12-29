@@ -20,8 +20,8 @@ out_dim = {'MNIST': 10, 'FashionMNIST': 10, 'CIFAR100': 100}
 chan_dim = {'MNIST': 1, 'FashionMNIST': 1, 'CIFAR100': 3}
 multiplier = {'MNIST': 1, 'FashionMNIST': 2, 'CIFAR100': 2}
 
-input_filename, output_filename = argv[1], argv[2]
-split = int(output_filename.split("_")[1])
+input_filename, output_filename = 'data/'+argv[1], 'data/'+argv[2]
+split = int(argv[2].split("_")[1])
 
 class LayerSplitNet(nn.Module):
     def __init__(self):

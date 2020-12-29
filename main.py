@@ -25,6 +25,7 @@ from workflow.splitnet.Semantic_Only import SemanticOnlyDecider
 
 # Scheduler imports
 from scheduler.MAD_MC_Random import MADMCRScheduler
+from scheduler.Random_Random_Random import RandomScheduler
 
 # Auxiliary imports
 from stats.Stats import *
@@ -75,14 +76,14 @@ def initalizeEnvironment(environment, logger):
 	
 	# Initialize scheduler
 	''' Can be LRMMTR, RF, RL, RM, Random, RLRMMTR, TMCR, TMMR, TMMTR, GA, GOBI (arg = 'energy_latency_'+str(HOSTS)) '''
-	scheduler = MADMCRScheduler()
+	scheduler = RandomScheduler()
 
 	# Initialize Environment
 	hostlist = datacenter.generateHosts()
-	env = Worfklow(scheduler, decider, CONTAINERS, INTERVAL_TIME, hostlist, db, environment, logger)
+	env = Workflow(scheduler, decider, CONTAINERS, INTERVAL_TIME, hostlist, db, environment, logger)
 
 	# Execute first step
-	newworkflowinfos = workload.generateNewWorkloads(env.interval)
+	newworkflowinfos = workload.generateNewWorkflows(env.interval)
 	workflowsplits = decider.decision(newworkflowinfos)
 	newcontainerinfos = workload.generateNewContainers(env.interval, newworkflowinfos, workflowsplits) # New containers info
 	env.addWorkflows(newcontainerinfos)
@@ -103,7 +104,7 @@ def initalizeEnvironment(environment, logger):
 	return datacenter, workload, scheduler, env, stats
 
 def stepSimulation(workload, scheduler, env, stats):
-	newworkflowinfos = workload.generateNewWorkloads(env.interval)
+	newworkflowinfos = workload.generateNewWorkflows(env.interval)
 	workflowsplits = decider.decision(newworkflowinfos)
 	newcontainerinfos = workload.generateNewContainers(env.interval, newworkflowinfos, workflowsplits) # New containers info
 	if opts.env != '': print(newcontainerinfos)
