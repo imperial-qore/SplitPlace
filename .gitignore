@@ -10,6 +10,7 @@ workflow/workload/DockerImages/data/
 all_datasets
 results
 modstat.py
+tmp/
 
 # C extensions
 *.so

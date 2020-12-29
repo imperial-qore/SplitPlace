@@ -2,6 +2,7 @@ import numpy as np
 
 class Workload():
 	def __init__(self):
+		self.workflow_id = 0
 		self.creation_id = 0
 		self.createdContainers = []
 		self.deployedContainers = []

@@ -155,9 +155,9 @@ def main(model, train_loader, test_loader, optimizer, start_epoch, accuracy_list
 
 if __name__ == '__main__':
     model, train_loader, test_loader, optimizer, epoch, accuracy_list = setup()
-    with open('test.pt', 'wb') as f:
-        data, target = list(test_loader)[0]
-        pickle.dump(data, f)
+    # with open('test.pt', 'wb') as f:
+    #     data, target = list(test_loader)[0]
+    #     pickle.dump(data, f)
     if 'test' in operation:
         test(model, test_loader)
         plot_accuracies(accuracy_list, data_type+'_'+model_type+"_split")
