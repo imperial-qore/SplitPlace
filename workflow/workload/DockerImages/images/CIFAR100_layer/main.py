@@ -82,7 +82,8 @@ if __name__ == '__main__':
     with open(input_filename, 'rb') as f:
         inp = pickle.load(f)
     ####### Process Input #######
-    out = model(inp, split)
+    output = [model(i.reshape(1, i.shape[0], i.shape[1], i.shape[2])) for i in inp]
+    out = torch.cat(output, dim=0)
     # print(out)
     ######## Dump Output ########
     with open(output_filename, 'wb') as f:

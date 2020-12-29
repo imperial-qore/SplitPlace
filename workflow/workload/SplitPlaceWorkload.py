@@ -29,14 +29,14 @@ class SPW(Workload):
             ])
         for data_type in ['MNIST', 'FashionMNIST', 'CIFAR100']:
             dataset = eval("datasets."+data_type+"('workflow/workload/DockerImages/data', train=True, download=True,transform=transform)")
-            train_loader = torch.utils.data.DataLoader(dataset, batch_size=6400, shuffle=True)
+            train_loader = torch.utils.data.DataLoader(dataset, batch_size=20000, shuffle=True)
             self.datasets[data_type] = list(train_loader)
         
     def createWorkflowInput(self, data_type, workflow_id):
         path = 'tmp/'+str(workflow_id)+'/'
         if not os.path.exists(path): os.mkdir(path)
         data, target = random.choice(self.datasets[data_type])
-        with open(path+'data.pt', 'wb') as f:
+        with open(path+str(workflow_id)+'_data.pt', 'wb') as f:
             pickle.dump(data, f)
         with open(path+'target.pt', 'wb') as f:
             pickle.dump(target, f)

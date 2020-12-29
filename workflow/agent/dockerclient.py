@@ -9,8 +9,12 @@ import docker
 import codes
 import json
 import os
+import subprocess
 
 # Reference: https://docker-py.readthedocs.io/en/stable/api.html
+
+logging.basicConfig(filename='SplitPlaceDockerClient.log', level=logging.DEBUG,
+                            format='%(asctime)s - %(levelname)s - %(message)s')
 
 class DockerClient():
     
@@ -25,7 +29,8 @@ class DockerClient():
         inputFileName = config["inputFileName"]
         outputFileName = config["outputFileName"]
         try:
-            cmd = "docker run -itd --name "+name+" -v ~/container_data/:/data "+image+" 'python3' 'main.py' '"+inputFileName+"' '"+outputFileName+"'"
+            cmd = "docker run -itd --name "+name+" -v ~/container_data/:/root/data "+image+" 'python3' 'main.py' '"+inputFileName+"' '"+outputFileName+"'"
+            logging.debug(cmd)
             cid = subprocess.Popen(cmd, shell=True,stdout=subprocess.PIPE).communicate()[0].decode('utf-8').strip()
         except requests.exceptions.ConnectionError as err:
             rc = codes.FAILED

@@ -13,8 +13,8 @@ class Stats():
 		self.workload = WorkloadModel
 		self.datacenter = Datacenter
 		self.scheduler = Scheduler
-		self.simulated_scheduler = GOBIScheduler('energy_latency_'+str(self.datacenter.num_hosts))
-		self.simulated_scheduler.env = self.env
+		# self.simulated_scheduler = GOBIScheduler('energy_latency_'+str(self.datacenter.num_hosts))
+		# self.simulated_scheduler.env = self.env
 		self.initStats()
 
 	def initStats(self):	
@@ -99,7 +99,7 @@ class Stats():
 		metrics['slaviolations'] = len(np.where([c.destroyAt > c.sla for c in destroyed]))
 		metrics['slaviolationspercentage'] = metrics['slaviolations'] * 100.0 / len(destroyed) if len(destroyed) > 0 else 0
 		metrics['waittime'] = [c.startAt - c.createAt for c in destroyed]
-		metrics['energytotalinterval_pred'], metrics['avgresponsetime_pred'] = self.runSimulationGOBI()
+		# metrics['energytotalinterval_pred'], metrics['avgresponsetime_pred'] = self.runSimulationGOBI()
 		self.metrics.append(metrics)
 
 	def saveSchedulerInfo(self, selectedcontainers, decision, schedulingtime):

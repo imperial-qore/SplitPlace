@@ -15,7 +15,7 @@ class Task():
 		self.split = split
 		self.dependentOn = dependentOn
 		self.application = application
-		self.inputFileName = 'data.pt' if ('semantic' in self.application or self.split == 0) else str(self.workflowID)+"_"+str(self.split-1)
+		self.inputFileName = str(self.workflowID)+'_data.pt' if ('semantic' in self.application or self.split == 0) else str(self.workflowID)+"_"+str(self.split-1)
 		self.outputFileName = str(self.workflowID)+"_"+str(self.split)
 		# Initial utilization metrics
 		self.ips = 0
