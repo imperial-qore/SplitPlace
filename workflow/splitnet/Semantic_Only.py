@@ -1,6 +1,6 @@
 from .SplitDecision import *
 
-class SemanticOnlyDecider(Scheduler):
+class SemanticOnlyDecider(SplitDecision):
 	def __init__(self):
 		super().__init__()
 

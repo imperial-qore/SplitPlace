@@ -1,7 +1,7 @@
 import requests
 import json
 from string import Template
-import framework.server.common.codes as codes
+import workflow.server.common.codes as codes
 
 class InvalidResponse():
 	text = {'server_error': ''}

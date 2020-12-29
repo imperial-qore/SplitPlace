@@ -16,7 +16,7 @@ from workflow.Workflow import *
 from workflow.database.Database import *
 from workflow.datacenter.Datacenter_Setup import *
 from workflow.datacenter.Datacenter import *
-from workflow.workload.SplitPlaceWorkfload import *
+from workflow.workload.SplitPlaceWorkload import *
 
 # Splitnet decision imports
 from workflow.splitnet.Random import RandomDecider
@@ -103,11 +103,15 @@ def initalizeEnvironment(environment, logger):
 	return datacenter, workload, scheduler, env, stats
 
 def stepSimulation(workload, scheduler, env, stats):
-	newcontainerinfos = workload.generateNewContainers(env.interval) # New containers info
+	newworkflowinfos = workload.generateNewWorkloads(env.interval)
+	workflowsplits = decider.decision(newworkflowinfos)
+	newcontainerinfos = workload.generateNewContainers(env.interval, newworkflowinfos, workflowsplits) # New containers info
 	if opts.env != '': print(newcontainerinfos)
+	env.addWorkflows(newcontainerinfos)
 	deployed, destroyed = env.addContainers(newcontainerinfos) # Deploy new containers and get container IDs
 	start = time()
-	selected = scheduler.selection() # Select container IDs for migration
+	############## Disabled Migration ##############
+	selected = [] # scheduler.selection() # Select container IDs for migration
 	decision = scheduler.filter_placement(scheduler.placement(selected+deployed)) # Decide placement for selected container ids
 	schedulingTime = time() - start
 	migrations = env.simulationStep(decision) # Schedule containers
@@ -159,14 +163,14 @@ if __name__ == '__main__':
 
 	if env != '':
 		# Convert all agent files to unix format
-		unixify(['framework/agent/', 'framework/agent/scripts/'])
+		unixify(['workflow/agent/', 'workflow/agent/scripts/'])
 
 		# Start InfluxDB service
 		print(color.HEADER+'InfluxDB service runs as a separate front-end window. Please minimize this window.'+color.ENDC)
 		if 'Windows' in platform.system():
 			os.startfile('C:/Program Files/InfluxDB/influxdb-1.8.3-1/influxd.exe')
 
-		configFile = 'framework/config/' + opts.env + '_config.json'
+		configFile = 'workflow/config/' + opts.env + '_config.json'
 	    
 		logger.basicConfig(filename=logFile, level=logger.DEBUG,
 	                        format='%(asctime)s - %(levelname)s - %(message)s')

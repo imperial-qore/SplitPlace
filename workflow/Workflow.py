@@ -110,10 +110,10 @@ class Workflow():
 	def addWorkflows(self, containerInfoList):
 		for WorkflowID, CreationID, interval, _, _, SLA, application in containerInfoList:
 			if WorkflowID not in self.activeworkflows:
-				self.activeworkflows[WorkflowID] = ('ccids': [CreationID], 
-					'createAt': interval, 
-					'sla': SLA, 
-					'application': application)
+				self.activeworkflows[WorkflowID] = {'ccids': [CreationID], \
+					'createAt': interval, \
+					'sla': SLA, \
+					'application': application}
 			elif CreationID not in self.activeworkflows[WorkflowID]['ccids']:
 				self.activeworkflows[WorkflowID]['ccids'].append(CreationID)
 
@@ -164,17 +164,17 @@ class Workflow():
 		else:
 			outputs = []
 			with split in range(5):
-			    with open('tmp/'+wid+'/'+wid+'_'+str(split), 'rb') as f:
-			        outputs.append(pickle.load(f))
+				with open('tmp/'+wid+'/'+wid+'_'+str(split), 'rb') as f:
+					outputs.append(pickle.load(f))
 			output = F.log_softmax(torch.cat(outputs, dim=1), dim=1)
-	    with open('tmp/'+str(WorkflowID)+'/target.pt', 'rb') as f:
-	        target = pickle.load(f)
-	    pred = output.argmax(dim=1, keepdim=True)
-	    correct = pred.eq(target.view_as(pred)).sum().item()
-	    total = int(target.shape[0])
-	    return correct, total
+		with open('tmp/'+str(WorkflowID)+'/target.pt', 'rb') as f:
+			target = pickle.load(f)
+		pred = output.argmax(dim=1, keepdim=True)
+		correct = pred.eq(target.view_as(pred)).sum().item()
+		total = int(target.shape[0])
+		return correct, total
 
-	def destroyWorkflow(self):
+	def destroyCompletedWorkflows(self):
 		for WorkflowID in self.activeworkflows:
 			allDestroyed = True
 			for ccids in self.activeworkflows[WorkflowID]['ccids']:
@@ -194,10 +194,10 @@ class Workflow():
 			if container and not container.active:
 				container.destroy()
 				self.destroyedccids.add(container.creationID)
-				self.containerlist[i] = None
+				self.containerlist[i] = None 
 				self.inactiveContainers.append(container)
 				destroyed.append(container)
-		self.destroyWorkflow()
+		self.destroyCompletedWorkflows()
 		return destroyed
 
 	def getNumActiveContainers(self):
@@ -231,9 +231,8 @@ class Workflow():
 	def parallelizedFunc(self, i):
 		cid, hid = i
 		container = self.getContainerByID(cid)
-		################# Disabled Migration ###################
 		if self.containerlist[cid].hostid != -1:
-		# 	container.allocateAndrestore(hid)
+			container.allocateAndrestore(hid)
 		else:
 			container.allocateAndExecute(hid)
 		return container

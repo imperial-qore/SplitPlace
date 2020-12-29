@@ -1,7 +1,7 @@
 from .SplitDecision import *
 import random
 
-class RandomDecider(Scheduler):
+class RandomDecider(SplitDecision):
 	def __init__(self):
 		super().__init__()
 

@@ -1,6 +1,6 @@
 import numpy as np
 import json
-from framework.server.restClient import *
+from workflow.server.restClient import *
 import subprocess
 import requests
 import logging

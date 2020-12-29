@@ -7,9 +7,9 @@ import sys
 from string import Template
 import requests
 import pdb
-from framework.server.common.codes import *
+from workflow.server.common.codes import *
 import logging
-import framework.server.restClient as rclient
+import workflow.server.restClient as rclient
 from time import time
 from datetime import datetime
 
