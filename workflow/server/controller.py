@@ -39,14 +39,14 @@ class RequestHandler():
         res = subprocess.run(["scp", "-o", "StrictHostKeyChecking=no", "-i", "workflow/install_scripts/ssh_keys/id_rsa",
         "tmp/"+str(workflowID)+'/'+filename, uname+"@"+hostIP+":~/container_data"], capture_output=True)
         if 'No such file' in str(res.stderr):
-            raise("File not found: ", "tmp/"+str(workflowID)+'/'+filename)
+            raise(Exception("File not found: "+"tmp/"+str(workflowID)+'/'+filename))
 
     def copy_from_host(self, hostIP, filename, workflowID):
         uname = 'vagrant' if self.env.environment == 'Vagrant' else 'ansible'
         res = subprocess.run(["scp", "-o", "StrictHostKeyChecking=no", "-i", "workflow/install_scripts/ssh_keys/id_rsa",
         uname+"@"+hostIP+":~/container_data/"+filename, "tmp/"+str(workflowID)], capture_output=True)
         if 'No such file' in str(res.stderr):
-            raise("File not found: ", uname+"@"+hostIP+":~/container_data/"+filename)
+            raise(Exception("File not found: "+uname+"@"+hostIP+":~/container_data/"+filename))
 
     def create(self, json_body, hostIP):
         self.copy_to_host(hostIP, json_body["fields"]["inputFileName"], json_body["fields"]["workflowID"])
