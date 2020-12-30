@@ -144,6 +144,9 @@ class Workflow():
 			if self.getPlacementPossible(cid, hid):
 				migrations.append((cid, hid))
 				container.allocateAndExecute(hid)
+				ram_usage, _, _ = container.getRAM()
+				# Update RAM usages for getPlacementPossible()
+				self.getHostByID(hid).ram.size += ram_usage
 			# destroy pointer to this unallocated container as book-keeping is done by workload model
 			else: 
 				self.containerlist[cid] = None

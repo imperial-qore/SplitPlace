@@ -31,19 +31,19 @@ class LayerSplitNet(nn.Module):
         self.fc1 = nn.Linear(16 * multiplier[data_type] * (in_dim[data_type] - 4) ** 2, 128*multiplier[data_type])
         self.fc2 = nn.Linear(128*multiplier[data_type], out_dim[data_type])
 
-    def forward(self, x, split=0):
-        if split in [0, 1]:
+    def forward(self, x, split=-1):
+        if split in [-1, 0]:
             x = self.conv1(x)
             x = F.relu(x)
-        if split in [0, 2]:
+        if split in [-1, 1]:
             x = self.conv2(x)
             x = F.relu(x)
-        if split in [0, 3]:
+        if split in [-1, 2]:
             x = F.max_pool2d(x, 2)
             x = torch.flatten(x, 1)
             x = self.fc1(x)
             x = F.relu(x)
-        if split in [0, 4]:
+        if split in [-1, 3]:
             x = self.fc2(x)
             x = F.log_softmax(x, dim=1)
         return x
@@ -64,8 +64,8 @@ class SemanticSplitNet(nn.Module):
             ) for _ in range(5)]
         self.semantic = nn.ModuleList(self.semantic)
 
-    def forward(self, x, split=0):
-        if split == 0:
+    def forward(self, x, split=-1):
+        if split == -1:
             y = [split(x) for split in self.semantic]
             x = F.log_softmax(torch.cat(y, dim=1), dim=1)
         else:
@@ -82,9 +82,9 @@ if __name__ == '__main__':
     with open(input_filename, 'rb') as f:
         inp = pickle.load(f)
     ####### Process Input #######
-    output = [model(i.reshape(1, i.shape[0], i.shape[1], i.shape[2])) for i in inp]
+    output = [model(i.reshape([1] + list(i.shape)), split) for i in inp]
     out = torch.cat(output, dim=0)
-    # print(out)
+    # print(out.shape)
     ######## Dump Output ########
     with open(output_filename, 'wb') as f:
         pickle.dump(out, f)

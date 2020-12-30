@@ -104,7 +104,7 @@ class Node():
 		host_data, _ = self.env.controller.gethostStat(self.ip)
 		if 'fields' in host_data:
 			self.ips = host_data['fields']['cpu'] * self.ipsCap / 100
-			self.ram.size = host_data['fields']['memory']
+			self.ram.size = host_data['fields']['memory'] * 0.01 * self.ramCap.size
 			self.disk.size = host_data['fields']['disk']
 		self.ram.read, self.ram.write = 0, 0
 		self.disk.read, self.disk.write = 0, 0
