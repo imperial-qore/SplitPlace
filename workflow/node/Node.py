@@ -98,7 +98,7 @@ class Node():
 	def updateUtilizationMetrics(self):
 		container_data, _ = self.env.controller.getContainerStat(self.ip)
 		for container_d in container_data:
-			ccid = int(container_d['fields']['name'].split("_")[0])
+			ccid = int(container_d['fields']['name'].split("_")[2])
 			container = self.env.getContainerByCID(ccid)
 			container.updateUtilizationMetrics(container_d['fields'])
 		host_data, _ = self.env.controller.gethostStat(self.ip)

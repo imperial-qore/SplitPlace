@@ -177,7 +177,7 @@ class Workflow():
 	def destroyCompletedWorkflows(self):
 		for WorkflowID in self.activeworkflows:
 			allDestroyed = True
-			for ccids in self.activeworkflows[WorkflowID]['ccids']:
+			for ccid in self.activeworkflows[WorkflowID]['ccids']:
 				if ccid not in self.destroyedccids:
 					allDestroyed = False
 			if allDestroyed:

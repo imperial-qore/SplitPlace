@@ -47,7 +47,7 @@ HOSTS = 10 * 5 if opts.env == '' else 10
 CONTAINERS = HOSTS
 TOTAL_POWER = 1000
 ROUTER_BW = 10000
-INTERVAL_TIME = 60 # seconds
+INTERVAL_TIME = 120 # seconds
 NEW_CONTAINERS = 0 if HOSTS == 10 else 5
 DB_NAME = ''
 DB_HOST = ''
@@ -91,6 +91,7 @@ def initalizeEnvironment(environment, logger):
 	start = time()
 	decision = scheduler.placement(deployed) # Decide placement using container ids
 	schedulingTime = time() - start
+	print(color.BLUE+decision+color.ENDC)
 	migrations = env.allocateInit(decision) # Schedule containers
 	workload.updateDeployedContainers(env.getCreationIDs(migrations, deployed)) # Update workload allocated using creation IDs
 	print("Deployed containers' creation IDs:", env.getCreationIDs(migrations, deployed))

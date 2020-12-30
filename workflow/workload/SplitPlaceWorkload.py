@@ -17,7 +17,7 @@ class SPW(Workload):
         self.std_dev = std_dev
         self.db = database
         self.formDatasets()
-        shutil.rmtree('tmp/')
+        if os.path.exists('tmp/'): shutil.rmtree('tmp/')
         os.mkdir('tmp/')
 
     def formDatasets(self):
