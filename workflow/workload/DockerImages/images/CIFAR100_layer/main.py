@@ -6,7 +6,9 @@ from torchvision import datasets, transforms
 from torch.optim.lr_scheduler import StepLR
 from sys import argv
 import os
+import bz2
 import pickle
+import _pickle as cPickle
 
 dirname = 'assets/'
 model_name = os.listdir('assets')[0]
@@ -80,12 +82,12 @@ if __name__ == '__main__':
     model.load_state_dict(checkpoint['model_state_dict'])
     del checkpoint
     ######## Load Input ########
-    with open(input_filename, 'rb') as f:
-        inp = pickle.load(f)
+    with bz2.BZ2File(input_filename, 'rb') as f:
+        inp = cPickle.load(f)
     ####### Process Input #######
     output = [model(i.reshape([1] + list(i.shape)), split) for i in inp]
     out = torch.cat(output, dim=0)
     # print(out.shape)
     ######## Dump Output ########
-    with open(output_filename, 'wb') as f:
-        pickle.dump(out, f)
+    with bz2.BZ2File(output_filename, 'wb') as f:
+        cPickle.dump(out, f, protocol=4)

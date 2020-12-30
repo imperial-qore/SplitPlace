@@ -11,7 +11,9 @@ import torch
 import torch.nn.functional as F
 from pprint import pprint
 from utils.ColorUtils import *
+import bz2
 import pickle
+import _pickle as cPickle
 
 num_cores = multiprocessing.cpu_count()
 
@@ -148,6 +150,7 @@ class Workflow():
 		start = time()
 		migrations = []
 		for (cid, hid) in decision:
+			hid = 1
 			container = self.getContainerByID(cid)
 			assert container.getHostID() == -1 and hid != -1
 			if self.getPlacementPossible(cid, hid):
@@ -171,16 +174,16 @@ class Workflow():
 	def checkWorkflowOutput(self, WorkflowID):
 		wid = str(WorkflowID)
 		if 'layer' in self.activeworkflows[WorkflowID]['application']:
-		    with open('tmp/'+wid+'/'+wid+'_3', 'rb') as f:
-		        output = pickle.load(f)
+		    with bz2.BZ2File('tmp/'+wid+'/'+wid+'_3', 'rb') as f:
+		        output = cPickle.load(f)
 		else:
 			outputs = []
-			with split in range(5):
-				with open('tmp/'+wid+'/'+wid+'_'+str(split), 'rb') as f:
-					outputs.append(pickle.load(f))
+			for split in range(5):
+				with bz2.BZ2File('tmp/'+wid+'/'+wid+'_'+str(split), 'rb') as f:
+					outputs.append(cPickle.load(f))
 			output = F.log_softmax(torch.cat(outputs, dim=1), dim=1)
-		with open('tmp/'+str(WorkflowID)+'/target.pt', 'rb') as f:
-			target = pickle.load(f)
+		with bz2.BZ2File('tmp/'+str(WorkflowID)+'/target.pt', 'rb') as f:
+			target = cPickle.load(f)
 		pred = output.argmax(dim=1, keepdim=True)
 		correct = pred.eq(target.view_as(pred)).sum().item()
 		total = int(target.shape[0])
@@ -272,6 +275,7 @@ class Workflow():
 		migrations = []
 		containerIDsAllocated = []
 		for (cid, hid) in decision:
+			hid = 1
 			container = self.getContainerByID(cid)
 			currentHostID = self.getContainerByID(cid).getHostID()
 			currentHost = self.getHostByID(currentHostID)

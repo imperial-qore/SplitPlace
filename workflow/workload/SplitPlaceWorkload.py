@@ -8,7 +8,9 @@ import shutil
 import torch
 from torchvision import datasets, transforms
 import os
+import bz2
 import pickle
+import _pickle as cPickle
 
 class SPW(Workload):
     def __init__(self, num_workflows, std_dev, database):
@@ -29,17 +31,17 @@ class SPW(Workload):
             ])
         for data_type in ['MNIST', 'FashionMNIST', 'CIFAR100']:
             dataset = eval("datasets."+data_type+"('workflow/workload/DockerImages/data', train=True, download=True,transform=transform)")
-            train_loader = torch.utils.data.DataLoader(dataset, batch_size=10000, shuffle=True)
+            train_loader = torch.utils.data.DataLoader(dataset, batch_size=20000, shuffle=True)
             self.datasets[data_type] = list(train_loader)
         
     def createWorkflowInput(self, data_type, workflow_id):
         path = 'tmp/'+str(workflow_id)+'/'
         if not os.path.exists(path): os.mkdir(path)
         data, target = random.choice(self.datasets[data_type])
-        with open(path+str(workflow_id)+'_data.pt', 'wb') as f:
-            pickle.dump(data, f)
-        with open(path+'target.pt', 'wb') as f:
-            pickle.dump(target, f)
+        with bz2.BZ2File(path+str(workflow_id)+'_data.pt', 'wb') as f:
+            cPickle.dump(data, f)
+        with bz2.BZ2File(path+'target.pt', 'wb') as f:
+            cPickle.dump(target, f)
 
     def generateNewWorkflows(self, interval):
         workflowlist = []
@@ -48,7 +50,7 @@ class SPW(Workload):
         for i in range(max(minimum_workflows,int(gauss(self.num_workflows, self.std_dev)))):
             WorkflowID = self.workflow_id
             SLA = np.random.randint(3,10)
-            workflow = random.choices(workflows, weights=[0.4, 0.4, 0.2])[0]
+            workflow = random.choices(workflows, weights=[0.0, 0.0, 1])[0]
             workflowlist.append((WorkflowID, interval, SLA, workflow))
             self.createWorkflowInput(workflow, WorkflowID)
             self.workflow_id += 1

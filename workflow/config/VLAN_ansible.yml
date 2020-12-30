@@ -182,13 +182,13 @@
     #  name: flask
      # state: started
 
-  - name: Allocate 8G swap file
+  - name: Allocate 64G swap file
     become: yes
     ignore_errors: yes
     shell: '{{item}}'
     with_items:
       - 'sudo swapoff /swapfile'
-      - 'sudo fallocate -l 8G /swapfile'
+      - 'sudo fallocate -l 64G /swapfile'
 
   - name: Change permissions of swap file
     become: yes
