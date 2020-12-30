@@ -49,7 +49,7 @@ class RequestHandler():
         return self.basic_call(json_body, "create", hostIP)
         
     def destroy(self, json_body, hostIP):
-        self.copy_to_host(hostIP, json_body["fields"]["outputFileName"], json_body["fields"]["workflowID"])
+        self.copy_from_host(hostIP, json_body["fields"]["outputFileName"], json_body["fields"]["workflowID"])
         return self.basic_call(json_body, "delete", hostIP)
 
     def gethostStat(self, hostIP):

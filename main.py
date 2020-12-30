@@ -91,7 +91,7 @@ def initalizeEnvironment(environment, logger):
 	start = time()
 	decision = scheduler.placement(deployed) # Decide placement using container ids
 	schedulingTime = time() - start
-	print(color.BLUE+decision+color.ENDC)
+	print("Decision:", color.BLUE+str(decision)+color.ENDC)
 	migrations = env.allocateInit(decision) # Schedule containers
 	workload.updateDeployedContainers(env.getCreationIDs(migrations, deployed)) # Update workload allocated using creation IDs
 	print("Deployed containers' creation IDs:", env.getCreationIDs(migrations, deployed))
@@ -116,6 +116,7 @@ def stepSimulation(workload, scheduler, decider, env, stats):
 	selected = [] # scheduler.selection() # Select container IDs for migration
 	decision = scheduler.filter_placement(scheduler.placement(selected+deployed)) # Decide placement for selected container ids
 	schedulingTime = time() - start
+	print("Decision:", color.BLUE+str(decision)+color.ENDC)
 	migrations = env.simulationStep(decision) # Schedule containers
 	workload.updateDeployedContainers(env.getCreationIDs(migrations, deployed)) # Update workload deployed using creation IDs
 	print("Deployed containers' creation IDs:", env.getCreationIDs(migrations, deployed))

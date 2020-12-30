@@ -19,7 +19,7 @@ class Task():
 		self.outputFileName = str(self.workflowID)+"_"+str(self.split)
 		# Initial utilization metrics
 		self.ips = 0
-		self.ram = RAM(2000, 0, 0)
+		self.ram = RAM(5000, 0, 0)
 		self.bw = Bandwidth(0, 0)
 		self.disk = Disk(0, 0, 0)
 		self.sla = SLA

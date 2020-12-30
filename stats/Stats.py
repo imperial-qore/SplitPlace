@@ -265,7 +265,7 @@ class Stats():
 	def generateDatasets(self, dirname):
 		# self.generateDatasetWithInterval(dirname, 'cpu', objfunc='energytotalinterval')
 		self.generateDatasetWithInterval(dirname, 'cpu', metric2='apparentips', objfunc='energytotalinterval', objfunc2='avgresponsetime')
-		self.generateDatasetWithInterval2(dirname, 'cpu', 'apparentips', 'energytotalinterval_pred', 'avgresponsetime_pred', objfunc='energytotalinterval', objfunc2='avgresponsetime')
+		# self.generateDatasetWithInterval2(dirname, 'cpu', 'apparentips', 'energytotalinterval_pred', 'avgresponsetime_pred', objfunc='energytotalinterval', objfunc2='avgresponsetime')
 		
 	def generateCompleteDatasets(self, dirname):
 		self.generateCompleteDataset(dirname, self.hostinfo, 'hostinfo')

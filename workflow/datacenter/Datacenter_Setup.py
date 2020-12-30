@@ -93,6 +93,7 @@ def setupVagrantEnvironment(cfg, mode):
         res = call(["ssh", "-o", "StrictHostKeyChecking=no", "-i", "workflow/install_scripts/ssh_keys/id_rsa", uname+"@"+ip, "~/agent/scripts/delete.sh"], shell=True, stdout=PIPE, stderr=PIPE)  
         res = call(["ssh", "-o", "StrictHostKeyChecking=no", "-i", "workflow/install_scripts/ssh_keys/id_rsa", "-t", uname+"@"+ip, "sudo service docker restart"], shell=True, stdout=PIPE, stderr=PIPE)  
         res = call(["ssh", "-o", "StrictHostKeyChecking=no", "-i", "workflow/install_scripts/ssh_keys/id_rsa", "-t", uname+"@"+ip, "sudo rm -rf ~/container_data/*"], shell=True, stdout=PIPE, stderr=PIPE)         
+        res = call(["ssh", "-o", "StrictHostKeyChecking=no", "-i", "workflow/install_scripts/ssh_keys/id_rsa", "-t", uname+"@"+ip, "sudo swapoff /swapfile; sudo swapon /swapfile"], shell=True, stdout=PIPE, stderr=PIPE)    
     return HOST_IPS
 
 def destroyVagrantEnvironment(cfg, mode):
