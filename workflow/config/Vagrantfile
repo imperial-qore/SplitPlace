@@ -3,7 +3,7 @@ servers=[
 		:hostname => 'vm1',
 		:ip => '192.168.122.2',
 		:box => 'ubuntu/bionic64',
-		:ram => 4096,
+		:ram => 8192,
 		:cpu => 2,
 		:disk => '20GB'
 	},

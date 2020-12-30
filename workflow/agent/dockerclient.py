@@ -59,12 +59,14 @@ class DockerClient():
     # TODO: return finish time UTC
     def delete(self, config):
         name = config["name"]
+        inputFileName = config["inputFileName"]
         outputFileName = config["outputFileName"]
         rc = codes.SUCCESS
+        os.remove("../container_data/"+inputFileName)
         os.remove("../container_data/"+outputFileName)
         try:
             self.dclient1.stop(name)
-            self.dclient1.remove_container(name)
+            # self.dclient1.remove_container(name)
         except docker.errors.NotFound as err:
             rc = codes.NOT_FOUND
         except requests.exceptions.ConnectionError as err:

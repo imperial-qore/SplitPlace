@@ -271,7 +271,6 @@ class Workflow():
 		start = time()
 		migrations = []
 		containerIDsAllocated = []
-		print(decision)
 		for (cid, hid) in decision:
 			container = self.getContainerByID(cid)
 			currentHostID = self.getContainerByID(cid).getHostID()

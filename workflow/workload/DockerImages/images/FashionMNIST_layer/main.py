@@ -78,6 +78,7 @@ if __name__ == '__main__':
     checkpoint = torch.load(model_path)
     model = LayerSplitNet() if 'layer' in model_type else SemanticSplitNet()
     model.load_state_dict(checkpoint['model_state_dict'])
+    del checkpoint
     ######## Load Input ########
     with open(input_filename, 'rb') as f:
         inp = pickle.load(f)

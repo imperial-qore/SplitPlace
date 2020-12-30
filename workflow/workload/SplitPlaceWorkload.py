@@ -48,7 +48,7 @@ class SPW(Workload):
         for i in range(max(minimum_workflows,int(gauss(self.num_workflows, self.std_dev)))):
             WorkflowID = self.workflow_id
             SLA = np.random.randint(3,10)
-            workflow = random.choices(workflows, weights=[1, 0, 0])[0]
+            workflow = random.choices(workflows, weights=[0.4, 0.4, 0.2])[0]
             workflowlist.append((WorkflowID, interval, SLA, workflow))
             self.createWorkflowInput(workflow, WorkflowID)
             self.workflow_id += 1
