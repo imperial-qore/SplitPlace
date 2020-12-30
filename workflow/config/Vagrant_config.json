@@ -6,9 +6,9 @@
 		"box" : "ubuntu/bionic64",
 		"servers" : [
 			{
-				"ram" : 4096,
+				"ram" : 8192,
 				"cpu" : 2,
-				"disk": 20,
+				"disk": 30,
 				"powermodel": "PMXeon_X5570"
 			},
 			{

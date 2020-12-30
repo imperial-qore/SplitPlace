@@ -156,7 +156,7 @@ class RequestRouter():
         elif opcode == "stop":
             return self.containerClient.stop(payload["name"])
         elif opcode == "delete":
-            return self.containerClient.delete(payload["name"])
+            return self.containerClient.delete(payload)
         elif opcode == "checkpoint":
             return self.checkpoint(payload)
         elif opcode == "migrate":

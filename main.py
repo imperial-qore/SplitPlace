@@ -68,7 +68,7 @@ def initalizeEnvironment(environment, logger):
 
 	# Initialize workload
 	''' Can be SPW '''
-	workload = SPW(NEW_CONTAINERS, 0.5, db)
+	workload = SPW(NEW_CONTAINERS, 1.5, db)
 
 	# Initialize splitnet decision moduele
 	''' Can be Random, SemanticOnly, LayerOnly '''

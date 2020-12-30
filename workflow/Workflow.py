@@ -187,6 +187,7 @@ class Workflow():
 		return correct, total
 
 	def destroyCompletedWorkflows(self):
+		toDelete = []
 		for WorkflowID in self.activeworkflows:
 			allDestroyed = True
 			for ccid in self.activeworkflows[WorkflowID]['ccids']:
@@ -194,19 +195,22 @@ class Workflow():
 					allDestroyed = False
 			if allDestroyed:
 				correct, total = self.checkWorkflowOutput(WorkflowID)
-				shutil.rmtree('tmp/'+WorkflowID+'/')
+				shutil.rmtree('tmp/'+str(WorkflowID)+'/')
 				self.destroyedworkflows[WorkflowID] = deepcopy(self.activeworkflows[WorkflowID])
 				self.destroyedworkflows[WorkflowID]['destroyAt'] = self.interval
 				self.destroyedworkflows[WorkflowID]['result'] = (correct, total)
-				del self.activeworkflows[WorkflowID]
+				print(color.GREEN); print("Workflow ID: ", WorkflowID)
+				pprint(self.destroyedworkflows[WorkflowID]); print(color.ENDC)
+				toDelete.append(WorkflowID)
+		for WorkflowID in toDelete:
+			del self.activeworkflows[WorkflowID]
 
 	def parallelizedDestroy(self, cid):
 		container = self.getInactiveContainerByCID(cid)
 		container.destroy()
 
 	def destroyCompletedContainers(self):
-		destroyed = []
-		toDestroy = []
+		destroyed, toDestroy = [], []
 		for i, container in enumerate(self.containerlist):
 			if container and not container.active:
 				toDestroy.append(container.creationID)
