@@ -9,6 +9,9 @@ import shutil
 from copy import deepcopy
 import torch
 import torch.nn.functional as F
+from pprint import pprint
+from utils.ColorUtils import *
+import pickle
 
 num_cores = multiprocessing.cpu_count()
 
@@ -98,6 +101,11 @@ class Workflow():
 			if c and c.creationID == creationID:
 				return c
 
+	def getInactiveContainerByCID(self, creationID):
+		for c in self.inactiveContainers:
+			if c and c.creationID == creationID:
+				return c
+
 	def getHostByID(self, hostID):
 		return self.hostlist[hostID]
 
@@ -116,6 +124,7 @@ class Workflow():
 					'application': application}
 			elif CreationID not in self.activeworkflows[WorkflowID]['ccids']:
 				self.activeworkflows[WorkflowID]['ccids'].append(CreationID)
+		print(color.YELLOW); pprint(self.activeworkflows); print(color.ENDC)
 
 	def getPlacementPossible(self, containerID, hostID):
 		container = self.containerlist[containerID]
@@ -191,15 +200,21 @@ class Workflow():
 				self.destroyedworkflows[WorkflowID]['result'] = (correct, total)
 				del self.activeworkflows[WorkflowID]
 
+	def parallelizedDestroy(self, cid):
+		container = self.getInactiveContainerByCID(cid)
+		container.destroy()
+
 	def destroyCompletedContainers(self):
 		destroyed = []
+		toDestroy = []
 		for i, container in enumerate(self.containerlist):
 			if container and not container.active:
-				container.destroy()
+				toDestroy.append(container.creationID)
 				self.destroyedccids.add(container.creationID)
 				self.containerlist[i] = None 
 				self.inactiveContainers.append(container)
 				destroyed.append(container)
+		Parallel(n_jobs=num_cores, backend='threading')(delayed(self.parallelizedDestroy)(i) for i in toDestroy)
 		self.destroyCompletedWorkflows()
 		return destroyed
 

@@ -29,7 +29,7 @@ class SPW(Workload):
             ])
         for data_type in ['MNIST', 'FashionMNIST', 'CIFAR100']:
             dataset = eval("datasets."+data_type+"('workflow/workload/DockerImages/data', train=True, download=True,transform=transform)")
-            train_loader = torch.utils.data.DataLoader(dataset, batch_size=20000, shuffle=True)
+            train_loader = torch.utils.data.DataLoader(dataset, batch_size=10000, shuffle=True)
             self.datasets[data_type] = list(train_loader)
         
     def createWorkflowInput(self, data_type, workflow_id):
@@ -44,7 +44,8 @@ class SPW(Workload):
     def generateNewWorkflows(self, interval):
         workflowlist = []
         workflows = ['MNIST', 'FashionMNIST', 'CIFAR100']
-        for i in range(max(1,int(gauss(self.num_workflows, self.std_dev)))):
+        minimum_workflows = 1 if interval == 0 else 0
+        for i in range(max(minimum_workflows,int(gauss(self.num_workflows, self.std_dev)))):
             WorkflowID = self.workflow_id
             SLA = np.random.randint(3,10)
             workflow = random.choices(workflows, weights=[1, 0, 0])[0]

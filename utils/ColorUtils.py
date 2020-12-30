@@ -11,6 +11,7 @@ class color:
     RED = '\033[93m'
     FAIL = '\033[91m'
     ENDC = '\033[0m'
+    YELLOW = '\033[33m'
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
 

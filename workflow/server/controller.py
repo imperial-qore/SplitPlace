@@ -37,11 +37,11 @@ class RequestHandler():
     def copy_to_host(self, hostIP, filename, workflowID):
         uname = 'vagrant' if self.env.environment == 'Vagrant' else 'ansible'
         subprocess.call(["scp", "-o", "StrictHostKeyChecking=no", "-i", "workflow/install_scripts/ssh_keys/id_rsa",
-        "tmp/"+str(workflowID)+'/'+filename, uname+"@"+hostIP+":~/container_data/"])
+        "tmp/"+str(workflowID)+'/'+filename, uname+"@"+hostIP+":~/container_data"])
 
     def copy_from_host(self, hostIP, filename, workflowID):
         uname = 'vagrant' if self.env.environment == 'Vagrant' else 'ansible'
-        subprocess.call(["scp", "-o", "StrictHostKeyChecking=no", "-i", "~/agent/id_rsa",
+        subprocess.call(["scp", "-o", "StrictHostKeyChecking=no", "-i", "workflow/install_scripts/ssh_keys/id_rsa",
         uname+"@"+hostIP+":~/container_data/"+filename, "tmp/"+str(workflowID)])
 
     def create(self, json_body, hostIP):
