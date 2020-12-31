@@ -46,11 +46,14 @@ class SPW(Workload):
     def generateNewWorkflows(self, interval):
         workflowlist = []
         workflows = ['MNIST', 'FashionMNIST', 'CIFAR100']
+        min_sla, layer_intervals = 2, [5, 8, 15]
+        max_sla = [i + (i - min_sla) for i in layer_intervals]
+        max_sla_dict = dict(zip(workflows, max_sla))
         minimum_workflows = 1 if interval == 0 else 0
         for i in range(max(minimum_workflows,int(gauss(self.num_workflows, self.std_dev)))):
             WorkflowID = self.workflow_id
-            SLA = np.random.randint(3,10)
-            workflow = random.choices(workflows, weights=[0.0, 0.0, 1])[0]
+            workflow = random.choices(workflows, weights=[0.5, 0.25, 0.25])[0]
+            SLA = np.random.randint(2,max_sla_dict[workflow])
             workflowlist.append((WorkflowID, interval, SLA, workflow))
             self.createWorkflowInput(workflow, WorkflowID)
             self.workflow_id += 1

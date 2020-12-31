@@ -66,7 +66,7 @@ class DockerClient():
         os.remove("../container_data/"+outputFileName)
         try:
             self.dclient1.stop(name)
-            # self.dclient1.remove_container(name)
+            self.dclient1.remove_container(name)
         except docker.errors.NotFound as err:
             rc = codes.NOT_FOUND
         except requests.exceptions.ConnectionError as err:

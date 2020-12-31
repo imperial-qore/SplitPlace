@@ -150,7 +150,6 @@ class Workflow():
 		start = time()
 		migrations = []
 		for (cid, hid) in decision:
-			hid = 1
 			container = self.getContainerByID(cid)
 			assert container.getHostID() == -1 and hid != -1
 			if self.getPlacementPossible(cid, hid):
@@ -275,7 +274,6 @@ class Workflow():
 		migrations = []
 		containerIDsAllocated = []
 		for (cid, hid) in decision:
-			hid = 1
 			container = self.getContainerByID(cid)
 			currentHostID = self.getContainerByID(cid).getHostID()
 			currentHost = self.getHostByID(currentHostID)

@@ -14,7 +14,7 @@ RUN \
     wget
 
 RUN \
-    pip3 install torch torchvision 
+    pip3 install torch
     
 COPY assets assets
 COPY main.py main.py
