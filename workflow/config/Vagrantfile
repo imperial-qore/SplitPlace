@@ -3,9 +3,9 @@ servers=[
 		:hostname => 'vm1',
 		:ip => '192.168.122.2',
 		:box => 'ubuntu/bionic64',
-		:ram => 8192,
+		:ram => 2048,
 		:cpu => 2,
-		:disk => '20GB'
+		:disk => '40GB'
 	},
 	{
 		:hostname => 'vm2',
@@ -13,7 +13,7 @@ servers=[
 		:box => 'ubuntu/bionic64',
 		:ram => 8192,
 		:cpu => 4,
-		:disk => '30GB'
+		:disk => '40GB'
 	}
 ]
 
@@ -41,7 +41,7 @@ Vagrant.configure(2) do |config|
             config.vm.provision "conf setup script", type:  "shell", inline: "sed -i -e 's/\r$//' $HOME/agent/scripts/setup.sh", privileged: false
             config.vm.provision "run setup script", type:  "shell", inline: "$HOME/agent/scripts/setup.sh", privileged: false
             # Configure agent
-            config.vm.provision "setup swap", type:  "shell", inline: "sudo fallocate -l 16G /swapfile", privileged: false
+            config.vm.provision "setup swap", type:  "shell", inline: "sudo fallocate -l 20G /swapfile", privileged: false
             config.vm.provision "setup swap2", type:  "shell", inline: "sudo chmod 600 /swapfile", privileged: false
             config.vm.provision "setup swap3", type:  "shell", inline: "sudo mkswap /swapfile", privileged: false
             config.vm.provision "setup swap4", type:  "shell", inline: "sudo swapon /swapfile", privileged: false

@@ -35,3 +35,4 @@ sudo docker pull shreshthtuli/cifar100_layer
 sudo docker pull shreshthtuli/cifar100_semantic
 
 sudo mkdir ~/container_data/
+sudo chown $USER ~/container_data/

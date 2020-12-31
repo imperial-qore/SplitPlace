@@ -6,15 +6,15 @@
 		"box" : "ubuntu/bionic64",
 		"servers" : [
 			{
-				"ram" : 8192,
+				"ram" : 2048,
 				"cpu" : 2,
-				"disk": 20,
+				"disk": 40,
 				"powermodel": "PMXeon_X5570"
 			},
 			{
 				"ram" : 8192,
 				"cpu" : 4,
-				"disk": 30,
+				"disk": 40,
 				"powermodel": "PMXeon_X5570"
 			}
 		]
