@@ -14,7 +14,7 @@
 
 SplitPlace is a container orchestration framework for dynamic scheduling and decision making in resource constrained edge environments. SplitPlace decides whether to use semantic or layer wise splits of neural network applications with latency and accuracy critical user requirements on distributed setups with low memory legacy devices.
 
-## Wiki
+## Wiki (WIP)
 Access the [wiki](https://github.com/imperial-qore/SplitPlace/wiki) for installation instructions and replication of results.
 
 ## Todo
