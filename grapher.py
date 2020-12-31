@@ -67,11 +67,10 @@ elif option == 2:
 rot = 15
 xLabel = 'Simulation Time (minutes)'
 Colors = ['red', 'blue', 'green', 'orange', 'orchid', 'pink', 'cyan']
-apps = ['yolo', 'pocketsphinx', 'aeneas']
+apps = ['mnist', 'fashionmnist', 'cifar100']
 
 yLabelsStatic = ['Total Energy (Kilowatt-hr)', 'Average Energy (Kilowatt-hr)', 'Interval Energy (Kilowatt-hr)', 'Average Interval Energy (Kilowatt-hr)',\
 	'Number of completed tasks', 'Number of completed tasks per interval', 'Average Response Time (seconds)', 'Total Response Time (seconds)',\
-	'Average Migration Time (seconds)', 'Total Migration Time (seconds)', 'Number of Task migrations', 'Average Wait Time (intervals)', 'Average Wait Time (intervals) per application',\
 	'Average Completion Time (seconds)', 'Total Completion Time (seconds)', 'Average Response Time (seconds) per application',\
 	'Cost per container (US Dollars)', 'Fraction of total SLA Violations', 'Fraction of SLA Violations per application', \
 	'Interval Allocation Time (seconds)', 'Number of completed tasks per application', "Fairness (Jain's index)", 'Fairness', 'Fairness per application', \
@@ -83,8 +82,8 @@ yLabelStatic2 = {
 }
 
 yLabelsTime = ['Interval Energy (Kilowatts)', 'Number of completed tasks', 'Interval Response Time (seconds)', \
-	'Interval Migration Time (seconds)', 'Interval Completion Time (seconds)', 'Interval Cost (US Dollar)', \
-	'Fraction of SLA Violations', 'Number of Task migrations', 'Number of Task migrations', 'Average Wait Time', 'Average Wait Time (intervals)', \
+	'Interval Completion Time (seconds)', 'Interval Cost (US Dollar)', \
+	'Fraction of SLA Violations', 'Number of Task migrations', 'Average Wait Time', 'Average Wait Time (intervals)', \
 	'Average Execution Time (seconds)']
 
 all_stats_list = []

@@ -15,6 +15,7 @@ class Stats():
 		self.scheduler = Scheduler
 		self.simulated_scheduler = None # GOBIScheduler('energy_latency_'+str(self.datacenter.num_hosts))
 		# self.simulated_scheduler.env = self.env
+		self.completedWorkflows = None
 		self.initStats()
 
 	def initStats(self):	
@@ -40,6 +41,9 @@ class Stats():
 		hostinfo['disk'] = [host.getCurrentDisk() for host in self.env.hostlist]
 		hostinfo['diskavailable'] = [host.getDiskAvailable() for host in self.env.hostlist]
 		self.hostinfo.append(hostinfo)
+
+	def saveWorkflowInfo(self):
+		self.completedWorkflows = deepcopy(self.env.destroyedworkflows)
 
 	def saveWorkloadInfo(self, deployed, migrations):
 		workloadinfo = dict()
@@ -120,6 +124,7 @@ class Stats():
 		self.saveAllContainerInfo()
 		self.saveMetrics(destroyed, migrations)
 		self.saveSchedulerInfo(selectedcontainers, decision, schedulingtime)
+		self.saveWorkflowInfo()
 
 	def runSimulationGOBI(self):
 		host_alloc = []; container_alloc = [-1] * len(self.env.hostlist)

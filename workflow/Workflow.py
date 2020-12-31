@@ -123,6 +123,7 @@ class Workflow():
 				self.activeworkflows[WorkflowID] = {'ccids': [CreationID], \
 					'createAt': interval, \
 					'sla': SLA, \
+					'startAt': -1, \
 					'application': application}
 			elif CreationID not in self.activeworkflows[WorkflowID]['ccids']:
 				self.activeworkflows[WorkflowID]['ccids'].append(CreationID)
@@ -156,6 +157,8 @@ class Workflow():
 				migrations.append((cid, hid))
 				container.allocateAndExecute(hid)
 				ram_usage, _, _ = container.getRAM()
+				if self.activeworkflows[container.workflowID]['startAt'] == -1:
+					self.activeworkflows[container.workflowID]['startAt'] = self.interval
 				# Update RAM usages for getPlacementPossible()
 				self.getHostByID(hid).ram.size += ram_usage
 			# destroy pointer to this unallocated container as book-keeping is done by workload model
@@ -199,6 +202,7 @@ class Workflow():
 				correct, total = self.checkWorkflowOutput(WorkflowID)
 				shutil.rmtree('tmp/'+str(WorkflowID)+'/')
 				self.destroyedworkflows[WorkflowID] = deepcopy(self.activeworkflows[WorkflowID])
+				self.destroyedworkflows[WorkflowID]['sla'] = self.activeworkflows[WorkflowID]['sla']
 				self.destroyedworkflows[WorkflowID]['destroyAt'] = self.interval
 				self.destroyedworkflows[WorkflowID]['result'] = (correct, total)
 				print(color.GREEN); print("Workflow ID: ", WorkflowID)
