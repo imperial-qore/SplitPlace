@@ -87,6 +87,7 @@ if __name__ == '__main__':
     ####### Process Input #######
     output = [model(i.reshape([1] + list(i.shape)), split) for i in inp]
     out = torch.cat(output, dim=0)
+    del inp, model
     # print(out.shape)
     ######## Dump Output ########
     with bz2.BZ2File(output_filename, 'wb') as f:
