@@ -152,6 +152,8 @@ def main(model, train_loader, test_loader, optimizer, start_epoch, accuracy_list
         training_loss = train(model, train_loader, optimizer, epoch)
         test_loss, test_acc = test(model, test_loader)
         accuracy_list.append((training_loss, test_loss, test_acc))
+        plot_accuracies(accuracy_list, data_type+'_'+model_type+"_split")
+        save_model(path, model, optimizer, epoch, accuracy_list)
 
 if __name__ == '__main__':
     model, train_loader, test_loader, optimizer, epoch, accuracy_list = setup()
@@ -163,4 +165,3 @@ if __name__ == '__main__':
         plot_accuracies(accuracy_list, data_type+'_'+model_type+"_split")
     else:
         main(model, train_loader, test_loader, optimizer, epoch, accuracy_list)
-    save_model(path, model, optimizer, epoch, accuracy_list)
