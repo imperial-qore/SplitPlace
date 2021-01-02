@@ -19,9 +19,9 @@ from workflow.datacenter.Datacenter import *
 from workflow.workload.SplitPlaceWorkload import *
 
 # Splitnet decision imports
-from workflow.splitnet.Random import RandomDecider
-from workflow.splitnet.Layer_Only import LayerOnlyDecider
-from workflow.splitnet.Semantic_Only import SemanticOnlyDecider
+from decider.Random import RandomDecider
+from decider.Layer_Only import LayerOnlyDecider
+from decider.Semantic_Only import SemanticOnlyDecider
 
 # Scheduler imports
 from scheduler.MAD_MC_Random import MADMCRScheduler
