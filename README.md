@@ -21,6 +21,8 @@ Access the [wiki](https://github.com/imperial-qore/SplitPlace/wiki) for installa
 1. Add wiki for benchmarks: (a) explain layer and semantic splits, (b) describe IO, (c) describe code and datasets (MNIST, FashionMNIST and CIFAR100).
 2. Explain data pipeline strategy.
 3. Update Workflow engine.
+4. Train MAB split decision module.
+5. Develop decision aware QoS (acc + sla) optimization scheduler.
 
 ## License
 
