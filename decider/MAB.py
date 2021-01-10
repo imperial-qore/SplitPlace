@@ -33,9 +33,13 @@ class MABDecider(SplitDecision):
 	def updateAverages(self):
 		for WorkflowID in self.env.destroyedworkflows:
 			if WorkflowID not in self.workflowids_checked:
-				workflow = self.env.destroyedworkflows[WorkflowID]['application'].split('/')[1].split('_')[0]
-				intervals = self.env.destroyedworkflows[WorkflowID]['destroyAt'] - self.env.destroyedworkflows[WorkflowID]['createAt']
-				self.average_layer_intervals[workflow] = 0.1 * intervals + 0.9 * self.average_layer_intervals[workflow]
+				dict_ = self.destroyedworkflows[WorkflowID]
+				workflow = dict_['application'].split('/')[1].split('_')[0]
+				decision = dict_['application'].split('/')[1].split('_')[1]
+				decision = 0 if decision == self.choices[0] else 1
+				if decision == 0:
+					intervals = dict_['destroyAt'] - sdict_['createAt']
+					self.average_layer_intervals[workflow] = 0.1 * intervals + 0.9 * self.average_layer_intervals[workflow]
 
 	def updateRewards(self):
 		for WorkflowID in self.env.destroyedworkflows:
