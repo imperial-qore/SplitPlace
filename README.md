@@ -23,6 +23,7 @@ Access the [wiki](https://github.com/imperial-qore/SplitPlace/wiki) for installa
 3. Update Workflow engine.
 4. Train MAB split decision module.
 5. Develop decision aware QoS (acc + sla) optimization scheduler.
+6. Compare against baselines :- random+workflow, semantic+workflow, layer+workflow, MAB+workflow.
 
 ## License
 
