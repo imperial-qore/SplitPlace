@@ -11,7 +11,7 @@ class MABDecider(SplitDecision):
 		layer_intervals = [5, 8, 15]
 		self.average_layer_intervals = dict(zip(self.applications, layer_intervals))
 		self.workflowids_checked = []
-		self.epsilon = 0.9
+		self.epsilon = 0.95
 		self.low_rewards, self.low_counts = np.zeros(2), np.zeros(2)
 		self.high_rewards, self.high_counts = np.zeros(2), np.zeros(2)
 		self.train = train
@@ -75,6 +75,6 @@ class MABDecider(SplitDecision):
 					decision.append(self.choices[np.argmax(self.low_rewards)])
 				else:
 					decision.append(self.choices[np.argmax(self.high_rewards)])
-		self.epsilon *= 0.95
+		self.epsilon *= 0.99
 		if self.train: self.save_model()
 		return [self.choices[0]] * len(workflowlist)
