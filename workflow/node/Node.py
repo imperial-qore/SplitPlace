@@ -109,7 +109,7 @@ class Node():
 			# Delete datapoints of destroyed workflows
 			toDelete = []
 			for dp in host_data['fields']['datapoints'].split(','):
-				if int(dp.split('_')[0]) in self.env.destroyedworkflows:
+				if dp != '' and int(dp.split('_')[0]) in self.env.destroyedworkflows:
 					toDelete.append('~/container_data/'+dp)
 			if len(toDelete) != 0:
 				self.env.controller.run_cmd(self.ip, "sudo rm -rf "+' '.join(toDelete))

@@ -22,6 +22,7 @@ from workflow.workload.SplitPlaceWorkload import *
 from decider.Random import RandomDecider
 from decider.Layer_Only import LayerOnlyDecider
 from decider.Semantic_Only import SemanticOnlyDecider
+from decider.MABDecider import MABDecider
 
 # Scheduler imports
 from scheduler.MAD_MC_Random import MADMCRScheduler
@@ -46,12 +47,12 @@ parser.add_option("-m", "--mode", action="store", dest="mode", default="0",
 opts, args = parser.parse_args()
 
 # Global constants
-NUM_SIM_STEPS = 10
+NUM_SIM_STEPS = 30
 HOSTS = 10 * 5 if opts.env == '' else 10
 CONTAINERS = HOSTS
 TOTAL_POWER = 1000
 ROUTER_BW = 10000
-INTERVAL_TIME = 30 # seconds
+INTERVAL_TIME = 60 # seconds
 NEW_CONTAINERS = 0 if HOSTS == 10 else 5
 DB_NAME = ''
 DB_HOST = ''
@@ -76,7 +77,7 @@ def initalizeEnvironment(environment, logger):
 
 	# Initialize splitnet decision moduele
 	''' Can be Random, SemanticOnly, LayerOnly '''
-	decider = SemanticOnlyDecider()
+	decider = MABDecider(train=True)
 	
 	# Initialize scheduler
 	''' Can be LRMMTR, RF, RL, RM, Random, RLRMMTR, TMCR, TMMR, TMMTR, GA, GOBI (arg = 'energy_latency_'+str(HOSTS)) '''
