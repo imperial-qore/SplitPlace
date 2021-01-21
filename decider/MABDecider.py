@@ -5,6 +5,7 @@ import random
 import numpy as np
 import pickle
 from os import path
+from copy import deepcopy
 
 class MABDecider(SplitDecision):
 	def __init__(self, train=False):
@@ -35,7 +36,7 @@ class MABDecider(SplitDecision):
 	def save_model(self):
 		print(color.GREEN+"Saving MAB model"+color.ENDC)
 		all_arrays = self.low_rewards, self.low_counts, self.high_rewards, self.high_counts
-		self.model.append((self.average_layer_intervals, self.epsilon, self.r_thresh, all_arrays))
+		self.model.append(deepcopy((self.average_layer_intervals, self.epsilon, self.r_thresh, all_arrays)))
 		with open(SAVE_PATH, 'wb') as f:
 			pickle.dump(self.model, f)
 		plot_graphs(self.model)
@@ -43,7 +44,7 @@ class MABDecider(SplitDecision):
 	def updateAverages(self):
 		for WorkflowID in self.env.destroyedworkflows:
 			if WorkflowID not in self.workflowids_checked:
-				dict_ = self.destroyedworkflows[WorkflowID]
+				dict_ = self.env.destroyedworkflows[WorkflowID]
 				workflow = dict_['application'].split('/')[1].split('_')[0]
 				decision = dict_['application'].split('/')[1].split('_')[1]
 				decision = 0 if decision == self.choices[0] else 1
@@ -56,7 +57,7 @@ class MABDecider(SplitDecision):
 		for WorkflowID in self.env.destroyedworkflows:
 			if WorkflowID not in self.workflowids_checked:
 				self.workflowids_checked.append(WorkflowID)
-				dict_ = self.destroyedworkflows[WorkflowID]
+				dict_ = self.env.destroyedworkflows[WorkflowID]
 				workflow = dict_['application'].split('/')[1].split('_')[0]
 				decision = dict_['application'].split('/')[1].split('_')[1]
 				decision = 0 if decision == self.choices[0] else 1
@@ -72,7 +73,7 @@ class MABDecider(SplitDecision):
 					self.low_rewards[decision] = self.low_rewards[decision] + (reward - self.low_rewards[decision]) / self.low_counts[decision]
 				else:
 					self.high_counts[decision] += 1
-					self.low_rewards[decision] = self.low_rewards[decision] + (reward - self.low_rewards[decision]) / self.low_counts[decision]
+					self.high_rewards[decision] = self.high_rewards[decision] + (reward - self.high_rewards[decision]) / self.high_counts[decision]
 		return sum(rewards)/(len(rewards)+1e-5)
 
 	def decision(self, workflowlist):
