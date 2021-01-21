@@ -8,6 +8,7 @@ import os
 import platform
 from metrics.powermodels.PMRaspberryPi import *
 from metrics.powermodels.PMB2s import *
+from metrics.powermodels.PMB2ms import *
 from metrics.powermodels.PMB4ms import *
 from metrics.powermodels.PMB8ms import *
 from metrics.powermodels.PMXeon_X5570 import *
@@ -51,7 +52,7 @@ class Datacenter():
             IP = self.hosts[i]
             logging.error("Host details collected from: {}".format(IP))
             print(color.BOLD+IP+color.ENDC, data)
-            IPS = 2000 * config[self.env.lower()]['servers'][i]['cpu'] # (instructions * config[self.env.lower()]['servers'][i]['cpu'])/(float(data['clock']) * 1000000) if self.env_type == 'Virtual' else data['MIPS']
+            IPS = (instructions * config[self.env.lower()]['servers'][i]['cpu'])/(float(data['clock']) * 1000000) if self.env_type == 'Virtual' else data['MIPS']
             Power = eval(powermodels[i]+"()")
             Ram = RAM(data['Total_Memory'], data['Ram_read'], data['Ram_write'])
             Disk_ = Disk(data['Total_Disk'], data['Disk_read'], data['Disk_write'])

@@ -24,7 +24,7 @@
   - name: Copy the agent repository
     become_user: "{{username}}"
     copy:
-      src: "../../framework/agent"
+      src: "../../workflow/agent"
       dest: "~/"
 
   - name: Copy the key - id_rsa
@@ -81,8 +81,8 @@
   - name: Replace interface in agent file
     replace:
       path: /home/{{username}}/agent/agent.py
-      regexp: '192.168.0'
-      replace: "{{ipaddr}}"
+      regexp: 'codes.BASE_IP'
+      replace: '"{{ipaddr}}"'
   
   # Installing docker
   - name: Create target directory 
@@ -129,22 +129,16 @@
     user:
       name: '{{ username }}'
       groups: 'docker'
-#  - name: Add user to docker group
- #   shell: 'sudo usermod -aG docker $USER'
 
   - name: Ensure group "somegroup" exists
     group:
       name: docker
       state: present
    
-  # - name: Change the group
-  #   shell: 'newgrp docker'
-
   - name: Restart docker service
     become: yes
     shell: 'sudo service docker restart'
 
-  # Modofication to flask.conf and flask.service
   - name: Replace vagrant in conf file
     replace:
       path: /home/{{username}}/agent/scripts/flask.conf
@@ -165,22 +159,9 @@
     become: yes
     shell: 'sudo cp /home/{{username}}/agent/scripts/flask.service /lib/systemd/system/flask.service'
   
-  # - name: Reload the config in flask service 
-  #   #systemd:
-  #   daemon_reload: yes
-
-  - name: Start the flask service
-    become: yes
-    shell: 'sudo service flask start'
-
   - name: Restart the flask service
     become: yes
     shell: 'sudo service flask restart'
- # - name: Start service flask, if not started
-  #  become: true
-   # systemd:
-    #  name: flask
-     # state: started
 
   - name: Allocate 100G swap file
     become: yes
@@ -229,15 +210,34 @@
       - sudo systemctl stop systemd-timesyncd
       - sudo systemctl disable systemd-timesyncd
 
-  - name: pull yolo
+  - name: pull shreshthtuli/mnist_layer
     docker_image:
-      name: shreshthtuli/yolo
+      name: shreshthtuli/mnist_layer
   
-  - name: pull pocketsphinx
+  - name: pull shreshthtuli/mnist_semantic
     docker_image:
-      name: shreshthtuli/pocketsphinx
+      name: shreshthtuli/mnist_semantic
   
-  - name: pull aeneas
+  - name: pull shreshthtuli/fashionmnist_layer
     docker_image:
-      name: shreshthtuli/aeneas
+      name: shreshthtuli/fashionmnist_layer
 
+  - name: pull shreshthtuli/fashionmnist_semantic
+    docker_image:
+      name: shreshthtuli/fashionmnist_semantic
+
+  - name: pull shreshthtuli/cifar100_layer
+    docker_image:
+      name: shreshthtuli/cifar100_layer
+
+  - name: pull shreshthtuli/cifar100_semantic
+    docker_image:
+      name: shreshthtuli/cifar100_semantic
+
+  - name: Create container data directory
+    become: yes
+    ignore_errors: yes
+    shell: '{{item}}'
+    with_items:
+      - 'sudo mkdir /home/"{{username}}"/container_data/'
+      - 'sudo chown "{{username}}" /home/"{{username}}"/container_data/'
