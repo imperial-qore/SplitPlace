@@ -70,14 +70,15 @@ class RequestRouter():
         data = json.dumps(payload)
         return rc, data
 
-    def gethostStat(self):
+    def gethostStat(self, payload):
         rc = codes.SUCCESS 
+        uname = payload["uname"]
         cpu = psutil.cpu_percent()
         memory = psutil.virtual_memory()[2]
         disk = psutil.disk_usage('/')
         disk_total = disk.used / (1024 * 1024)
         ts = time.time()
-        payload = {"ip": self.hostIP, "time-stamp":ts, "cpu":cpu, "memory":memory, "disk":disk_total}
+        payload = {"ip": self.hostIP, "time-stamp":ts, "cpu":cpu, "memory":memory, "disk":disk_total, 'datapoints': ','.join(os.listdir('/home/'+uname+'/container_data/'))}
         data = json.dumps(payload)
         return rc, data
 
@@ -170,7 +171,7 @@ class RequestRouter():
         elif opcode == "hostDetailsPhysical":
             return self.hostDetailsPhysical()
         elif opcode == "hostStat":
-            return self.gethostStat()
+            return self.gethostStat(payload)
         else:
             return codes.BAD_REQ, ""
 

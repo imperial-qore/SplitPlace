@@ -51,7 +51,7 @@ HOSTS = 10 * 5 if opts.env == '' else 10
 CONTAINERS = HOSTS
 TOTAL_POWER = 1000
 ROUTER_BW = 10000
-INTERVAL_TIME = 300 # seconds
+INTERVAL_TIME = 30 # seconds
 NEW_CONTAINERS = 0 if HOSTS == 10 else 5
 DB_NAME = ''
 DB_HOST = ''

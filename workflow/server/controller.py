@@ -34,6 +34,11 @@ class RequestHandler():
         self.env.logger.debug("Response from "+opcode+"d container", rc)
         return rc, time() - start
 
+    def run_cmd(self, hostIP, cmd):
+        uname = 'vagrant' if self.env.environment == 'Vagrant' else 'ansible'
+        self.env.logger.debug("Running cmd '"+cmd+"' on IP: "+hostIP)
+        call(["ssh", "-o", "StrictHostKeyChecking=no", "-i", "workflow/install_scripts/ssh_keys/id_rsa", uname+"@"+hostIP, cmd], shell=True)  
+
     def copy_to_host(self, hostIP, filename, workflowID):
         uname = 'vagrant' if self.env.environment == 'Vagrant' else 'ansible'
         res = subprocess.run(["scp", "-o", "StrictHostKeyChecking=no", "-i", "workflow/install_scripts/ssh_keys/id_rsa",
@@ -58,7 +63,8 @@ class RequestHandler():
 
     def gethostStat(self, hostIP):
         message = "Host stats collected successfully"
-        data = rclient.HandleRequest({"opcode": "hostStat"}, hostIP, self.env)
+        uname = 'vagrant' if self.env.environment == 'Vagrant' else 'ansible'
+        data = rclient.HandleRequest({"opcode": "hostStat", "uname": uname}, hostIP, self.env)
         datapoint =  {
                     "measurement": "hostStat",
                     "tags": {
@@ -68,7 +74,8 @@ class RequestHandler():
                             {
                                 "cpu": data["cpu"],
                                 "memory": data["memory"],
-                                "disk": data["disk"]
+                                "disk": data["disk"],
+                                "datapoints": data["datapoints"]
                             },
                     "time": datetime.utcnow().isoformat(sep='T'),
                 } if 'server_error' not in data else {}

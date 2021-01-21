@@ -90,4 +90,4 @@ if __name__ == '__main__':
     # print(out.shape)
     ######## Dump Output ########
     with bz2.BZ2File(output_filename, 'wb') as f:
-        pickle.dump(out, protocol=4)
+        pickle.dump(out, f, protocol=4)

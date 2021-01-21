@@ -106,6 +106,13 @@ class Node():
 			self.ips = host_data['fields']['cpu'] * self.ipsCap / 100
 			self.ram.size = host_data['fields']['memory'] * 0.01 * self.ramCap.size
 			self.disk.size = host_data['fields']['disk']
+			# Delete datapoints of destroyed workflows
+			toDelete = []
+			for dp in host_data['fields']['datapoints'].split(','):
+				if int(dp.split('_')[0]) in self.env.destroyedworkflows:
+					toDelete.append('~/container_data/'+dp)
+			if len(toDelete) != 0:
+				self.env.controller.run_cmd(self.ip, "sudo rm -rf "+' '.join(toDelete))
 		self.ram.read, self.ram.write = 0, 0
 		self.disk.read, self.disk.write = 0, 0
 		for cid in self.env.getContainersOfHost(self.id):
