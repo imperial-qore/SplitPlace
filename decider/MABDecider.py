@@ -18,6 +18,7 @@ class MABDecider(SplitDecision):
 		self.low_rewards, self.low_counts = np.zeros(2), np.zeros(2)
 		self.high_rewards, self.high_counts = np.zeros(2), np.zeros(2)
 		self.train = train
+		random.seed(1)
 		self.load_model()
 
 	def load_model(self):
@@ -72,7 +73,7 @@ class MABDecider(SplitDecision):
 				else:
 					self.high_counts[decision] += 1
 					self.low_rewards[decision] = self.low_rewards[decision] + (reward - self.low_rewards[decision]) / self.low_counts[decision]
-		return sum(reward)/len(rewards)
+		return sum(rewards)/(len(rewards)+1e-5)
 
 	def decision(self, workflowlist):
 		self.updateAverages()
@@ -81,17 +82,17 @@ class MABDecider(SplitDecision):
 		for _, _, sla, workflow in workflowlist:
 			if self.train and random.random() < self.epsilon:
 				decisions.append(random.choice(self.choices))
-				print('Random Decision: ', decisions[-1])
+				if self.train: print('Random Decision:', decisions[-1])
 			else:
 				low = sla < self.average_layer_intervals[workflow.lower()]
 				if low:
-					decision.append(self.choices[np.argmax(self.low_rewards)])
+					decisions.append(self.choices[np.argmax(self.low_rewards)])
 				else:
-					decision.append(self.choices[np.argmax(self.high_rewards)])
-				print('MAB Decision: ', decisions[-1])
+					decisions.append(self.choices[np.argmax(self.high_rewards)])
+				if self.train: print('MAB Decision:', decisions[-1])
 		# Reward based decay
 		if avg_reward >= self.r_thresh:
 			self.epsilon *= 0.98
-			self.r_thresh = min(1, 1.01*self.r_thresh)
+			self.r_thresh = min(1, 1.05*self.r_thresh)
 		if self.train: self.save_model()
-		return [self.choices[0]] * len(workflowlist)
+		return decisions
