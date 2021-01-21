@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 from scheduler.GOBI import GOBIScheduler
+from copy import deepcopy
 
 plt.style.use(['science'])
 plt.rcParams["text.usetex"] = False

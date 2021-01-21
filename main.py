@@ -26,6 +26,10 @@ from decider.Semantic_Only import SemanticOnlyDecider
 # Scheduler imports
 from scheduler.MAD_MC_Random import MADMCRScheduler
 from scheduler.Random_Random_Random import RandomScheduler
+from scheduler.GOBI import GOBIScheduler
+from scheduler.GOBI2 import GOBI2Scheduler
+from scheduler.DAGOBI import DAGOBIScheduler
+from scheduler.DAGOBI2 import DAGOBI2Scheduler
 
 # Auxiliary imports
 from stats.Stats import *
@@ -42,7 +46,7 @@ parser.add_option("-m", "--mode", action="store", dest="mode", default="0",
 opts, args = parser.parse_args()
 
 # Global constants
-NUM_SIM_STEPS = 100
+NUM_SIM_STEPS = 10
 HOSTS = 10 * 5 if opts.env == '' else 10
 CONTAINERS = HOSTS
 TOTAL_POWER = 1000
@@ -72,7 +76,7 @@ def initalizeEnvironment(environment, logger):
 
 	# Initialize splitnet decision moduele
 	''' Can be Random, SemanticOnly, LayerOnly '''
-	decider = LayerOnlyDecider()
+	decider = SemanticOnlyDecider()
 	
 	# Initialize scheduler
 	''' Can be LRMMTR, RF, RL, RM, Random, RLRMMTR, TMCR, TMMR, TMMTR, GA, GOBI (arg = 'energy_latency_'+str(HOSTS)) '''

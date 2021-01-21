@@ -5,7 +5,7 @@ import random
 import numpy as np
 
 class MABDecider(SplitDecision):
-	def __init__(self, train):
+	def __init__(self, train=False):
 		super().__init__()
 		self.applications = ['mnist', 'fashionmnist', 'cifar100']
 		layer_intervals = [5, 8, 15]
@@ -67,7 +67,7 @@ class MABDecider(SplitDecision):
 		self.updateRewards()
 		decisions = []
 		for _, _, sla, workflow in workflowlist:
-			if random.random() < self.epsilon:
+			if self.train and random.random() < self.epsilon:
 				decisions.append(random.choice(self.choices))
 			else:
 				low = sla < self.average_layer_intervals[workflow.lower()]
