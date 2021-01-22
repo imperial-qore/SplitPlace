@@ -10,6 +10,7 @@ from os import mkdir, makedirs, remove, path, system, environ, getcwd
 if 'Windows' in platform.system():
 	from os import startfile
 
+system('python3 -m pip install matplotlib')
 system('python3 -m pip install -r requirements.txt')
 system('python3 -m pip install -U scikit-learn')
 system('python3 -m pip install torch==1.7.1+cpu torchvision==0.8.2+cpu -f https://download.pytorch.org/whl/torch_stable.html')
@@ -99,6 +100,6 @@ for filename in ['id_rsa', 'id_rsa.pub']:
 
 run_cmd_pwd("apt install ansible", password)
 run_cmd_pwd("apt install dos2unix", password)
-run_cmd_pwd("sudo chmod 400 framework/install_scripts/ssh_keys/id_rsa", password)
+run_cmd_pwd("sudo chmod 400 workflow/install_scripts/ssh_keys/id_rsa", password)
 
 print(color.GREEN+"All packages installed."+color.ENDC)
