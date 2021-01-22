@@ -4,7 +4,7 @@ from .MAB.utils import *
 import random
 import numpy as np
 import pickle
-from os import path
+from os import path, mkdir
 from copy import deepcopy
 
 class MABDecider(SplitDecision):
@@ -31,6 +31,8 @@ class MABDecider(SplitDecision):
 				self.low_rewards, self.low_counts, self.high_rewards, self.high_counts = all_arrays
 		else:
 			print(color.GREEN+"Creating new MAB model"+color.ENDC)
+			SAVE_DIR = SAVE_PATH.split('mab.pt')[0]
+			if not path.exists(SAVE_DIR): mkdir(SAVE_DIR)
 			self.model = []
 
 	def save_model(self):
