@@ -71,19 +71,20 @@ class Workflow():
 		self.containerlist += [None] * (self.containerlimit - len(self.containerlist))
 		return [container.id for container in deployedContainers]
 
-	def addContainer(self, CreationID, CreationInterval, SLA, Application):
+	def addContainer(self, WorkflowID, CreationID, interval, split, dependentOn, SLA, application):
 		for i,c in enumerate(self.containerlist):
 			if c == None or not c.active:
-				container = Task(i, CreationID, CreationInterval, SLA, Application, self, HostID = -1)
+				container = Task(i, WorkflowID, CreationID, interval, split, dependentOn, SLA, application, self, HostID = -1)
 				self.containerlist[i] = container
 				return container
 
 	def addContainerList(self, containerInfoList):
 		maxdeploy = min(len(containerInfoList), self.containerlimit-self.getNumActiveContainers())
+		if maxdeploy == 0: return []
 		deployedContainers = []
 		for WorkflowID, CreationID, interval, split, dependentOn, SLA, application in containerInfoList:
 			if dependentOn is None or dependentOn in self.destroyedccids:
-				dep = self.addContainerInit(WorkflowID, CreationID, interval, split, dependentOn, SLA, application)
+				dep = self.addContainer(WorkflowID, CreationID, interval, split, dependentOn, SLA, application)
 				deployedContainers.append(dep)
 				if len(deployedContainers) >= maxdeploy: break
 		return [container.id for container in deployedContainers]
