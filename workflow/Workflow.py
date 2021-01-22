@@ -261,7 +261,9 @@ class Workflow():
 		cid, hid = i
 		container = self.getContainerByID(cid)
 		if self.containerlist[cid].hostid != -1:
-			container.allocateAndrestore(hid)
+			# Disabled container migration
+			# container.allocateAndrestore(hid)
+			pass
 		else:
 			container.allocateAndExecute(hid)
 		return container
