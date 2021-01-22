@@ -13,6 +13,7 @@ import workflow.server.restClient as rclient
 from time import time
 from datetime import datetime
 import subprocess
+from subprocess import PIPE
 
 class RequestHandler():
     def __init__(self, database, env):
@@ -42,7 +43,7 @@ class RequestHandler():
     def copy_to_host(self, hostIP, filename, workflowID):
         uname = 'vagrant' if self.env.environment == 'Vagrant' else 'ansible'
         res = subprocess.run(["scp", "-o", "StrictHostKeyChecking=no", "-i", "workflow/install_scripts/ssh_keys/id_rsa",
-        "tmp/"+str(workflowID)+'/'+filename, uname+"@"+hostIP+":~/container_data"], capture_output=True)
+        "tmp/"+str(workflowID)+'/'+filename, uname+"@"+hostIP+":~/container_data"], stdout=PIPE, stderr=PIPE)
         if 'No such file' in str(res.stderr):
             raise(Exception("File not found: "+"tmp/"+str(workflowID)+'/'+filename))
 
