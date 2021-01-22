@@ -38,7 +38,7 @@ class RequestHandler():
     def run_cmd(self, hostIP, cmd):
         uname = 'vagrant' if self.env.environment == 'Vagrant' else 'ansible'
         self.env.logger.debug("Running cmd '"+cmd+"' on IP: "+hostIP)
-        subprocess.call(["ssh", "-o", "StrictHostKeyChecking=no", "-i", "workflow/install_scripts/ssh_keys/id_rsa", uname+"@"+hostIP, cmd], shell=True)  
+        os.system("ssh -o StrictHostKeyChecking=no -i workflow/install_scripts/ssh_keys/id_rsa "+uname+"@"+hostIPs+" "+cmd)  
 
     def copy_to_host(self, hostIP, filename, workflowID):
         uname = 'vagrant' if self.env.environment == 'Vagrant' else 'ansible'
