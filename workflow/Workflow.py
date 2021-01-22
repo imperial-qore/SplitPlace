@@ -263,7 +263,7 @@ class Workflow():
 		if self.containerlist[cid].hostid != -1:
 			# Disabled container migration
 			# container.allocateAndrestore(hid)
-			pass
+			return container
 		else:
 			container.allocateAndExecute(hid)
 		return container
