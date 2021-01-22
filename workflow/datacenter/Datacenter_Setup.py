@@ -51,9 +51,9 @@ def setupVLANEnvironment(cfg, mode):
         run_cmd("ansible-playbook workflow/config/VLAN_ansible.yml")
     uname = "ansible"
     for ip in HOST_IPS:
-        res = call(["ssh", "-o", "StrictHostKeyChecking=no", "-i", "workflow/install_scripts/ssh_keys/id_rsa", uname+"@"+ip, "~/agent/scripts/delete.sh"], shell=True, stdout=PIPE, stderr=PIPE)  
-        res = call(["ssh", "-o", "StrictHostKeyChecking=no", "-i", "workflow/install_scripts/ssh_keys/id_rsa", "-t", uname+"@"+ip, "sudo service docker restart"], shell=True, stdout=PIPE, stderr=PIPE)  
-        res = call(["ssh", "-o", "StrictHostKeyChecking=no", "-i", "workflow/install_scripts/ssh_keys/id_rsa", "-t", uname+"@"+ip, "sudo rm -rf ~/container_data/*"], shell=True, stdout=PIPE, stderr=PIPE)     
+        res = os.system("ssh -o StrictHostKeyChecking=no -i workflow/install_scripts/ssh_keys/id_rsa "+uname+"@"+ip+" ~/agent/scripts/delete.sh")  
+        res = os.system("ssh -o StrictHostKeyChecking=no -i workflow/install_scripts/ssh_keys/id_rsa "+uname+"@"+ip+" sudo service docker restart")  
+        res = os.system("ssh -o StrictHostKeyChecking=no -i workflow/install_scripts/ssh_keys/id_rsa "+uname+"@"+ip+" sudo rm -rf ~/container_data/*")  
     return HOST_IPS
 
 def destroyVLANEnvironment(cfg, mode):
