@@ -9,6 +9,8 @@ import platform
 from metrics.powermodels.PMRaspberryPi import *
 from metrics.powermodels.PMB2s import *
 from metrics.powermodels.PMB2ms import *
+from metrics.powermodels.PME2asv4 import *
+from metrics.powermodels.PME4asv4 import *
 from metrics.powermodels.PMB4ms import *
 from metrics.powermodels.PMB8ms import *
 from metrics.powermodels.PMXeon_X5570 import *

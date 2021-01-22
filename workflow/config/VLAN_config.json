@@ -14,6 +14,46 @@
 				"ip" : "51.11.154.139",
 				"cpu" : 2,
 				"powermodel": "PMB2ms"
+			},
+			{
+				"ip" : "51.132.235.18",
+				"cpu" : 2,
+				"powermodel": "PMB2ms"
+			},
+			{
+				"ip" : "51.132.235.17",
+				"cpu" : 2,
+				"powermodel": "PMB2ms"
+			},
+			{
+				"ip" : "51.132.235.127",
+				"cpu" : 2,
+				"powermodel": "PME2asv4"
+			},
+			{
+				"ip" : "51.132.235.130",
+				"cpu" : 2,
+				"powermodel": "PME2asv4"
+			},
+			{
+				"ip" : "51.132.235.48",
+				"cpu" : 4,
+				"powermodel": "PMB4ms"
+			},
+			{
+				"ip" : "51.132.235.84",
+				"cpu" : 4,
+				"powermodel": "PMB4ms"
+			},
+			{
+				"ip" : "51.132.235.133",
+				"cpu" : 4,
+				"powermodel": "PME4asv4"
+			},
+			{
+				"ip" : "51.132.235.125",
+				"cpu" : 4,
+				"powermodel": "PME4asv4"
 			}
 		]
 	}
