@@ -70,7 +70,7 @@ class Task():
 										"workflowID": self.workflowID
 									}
 						}
-		self.env.db.insert([self.json_body])
+		# self.env.db.insert([self.json_body])
 
 	def getBaseIPS(self):
 		return self.ips
