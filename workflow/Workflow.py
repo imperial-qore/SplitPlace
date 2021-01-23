@@ -265,6 +265,8 @@ class Workflow():
 			# container.allocateAndrestore(hid)
 			return container
 		else:
+			if self.activeworkflows[container.workflowID]['startAt'] == -1:
+				self.activeworkflows[container.workflowID]['startAt'] = self.interval
 			container.allocateAndExecute(hid)
 		return container
 
