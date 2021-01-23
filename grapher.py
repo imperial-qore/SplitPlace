@@ -26,12 +26,6 @@ plt.rcParams["text.usetex"] = True
 size = (2.9, 2.5)
 env = argv[1]
 option = 0
-sla_baseline = 'A3C'
-if len(argv) >= 3:
-	if 'SO' in argv[2]: option = 1
-	elif 'H' in argv[2]: 
-		option = 2
-		sla_baseline = 'GOBI'
 
 def fairness(l):
 	a = 1 / (np.mean(l)-(scipy.stats.hmean(l)+0.001)) # 1 / slowdown i.e. 1 / (am - hm)
@@ -59,11 +53,7 @@ def mean_confidence_interval(data, confidence=0.90):
 PATH = 'all_datasets/' + env + '/'
 SAVE_PATH = 'results/' + env + '/'
 
-Models = ['GOBI*', 'GOBI', 'A3C', 'GA', 'POND', 'LR-MMT', 'MAD-MC'] 
-if option == 1:
-	Models = ['SOGOBI*', 'SOGOBI', 'GOBI*', 'GOBI', 'A3C', 'POND']
-elif option == 2:
-	Models = ['HGOBI*', 'HGOBI', 'GOBI*', 'GOBI', 'A3C', 'POND']
+Models = ['Test', 'Test', 'Test'] 
 rot = 15
 xLabel = 'Simulation Time (minutes)'
 Colors = ['red', 'blue', 'green', 'orange', 'orchid', 'pink', 'cyan']
@@ -75,7 +65,10 @@ yLabelsStatic = ['Total Energy (Kilowatt-hr)', 'Average Energy (Kilowatt-hr)', '
 	'Cost per container (US Dollars)', 'Fraction of total SLA Violations', 'Fraction of SLA Violations per application', \
 	'Interval Allocation Time (seconds)', 'Number of completed tasks per application', "Fairness (Jain's index)", 'Fairness', 'Fairness per application', \
 	'Average CPU Utilization (%)', 'Average number of containers per Interval', 'Average RAM Utilization (%)', 'Scheduling Time (seconds)',\
-	'Average Execution Time (seconds)']
+	'Average Execution Time (seconds)', 'Average Workflow Wait Time per application (intervals)', \
+	'Average Workflow Wait Time (intervals)', 'Average Workflow Response Time (intervals)', \
+	'Average Workflow Response Time per application (intervals)', 'Average Workflow Accuracy', \
+	'Average Workflow Accuracy per application', 'Decision per application (% Layer)']
 
 yLabelStatic2 = {
 	'Average Completion Time (seconds)': 'Number of completed tasks'
@@ -102,23 +95,6 @@ for model in Models:
 all_stats = dict(zip(Models, all_stats_list))
 
 cost = (100 * 300 // 60) * (4 * 0.0472 + 2 * 0.189 + 2 * 0.166 + 2 * 0.333) # Hours * cost per hour
-
-if env == 'framework':
-	sla = {}
-	r = all_stats[sla_baseline].allcontainerinfo[-1]
-	start, end, application = np.array(r['start']), np.array(r['destroy']), np.array(r['application'])
-	for app in apps:
-		response_times = np.fmax(0, end - start)[application == 'shreshthtuli/'+app]
-		response_times.sort()
-		sla[app] = response_times[int(0.95*len(response_times))]
-else:
-	sla = {}
-	r = all_stats[sla_baseline].allcontainerinfo[-1]
-	start, end = np.array(r['start']), np.array(r['destroy'])
-	response_times = np.fmax(0, end - start)
-	response_times.sort()
-	sla[apps[0]] = response_times[int(0.95*len(response_times))]
-print(sla)
 
 Data = dict()
 CI = dict()
@@ -197,30 +173,87 @@ for ylabel in yLabelsStatic:
 			d = np.array([max(0, i['avgresponsetime']) for i in stats.metrics]) if stats else np.array([0.])
 			d2 = np.array([i['numdestroyed'] for i in stats.metrics]) if stats else np.array([1])
 			Data[ylabel][model], CI[ylabel][model] = np.sum(d[d2>0]*d2[d2>0]), 0
-		if 'f' in env and ylabel == 'Fraction of total SLA Violations':
-			r = stats.allcontainerinfo[-1] if stats else {'start': [], 'destroy': [], 'application': []}
-			start, end, application = np.array(r['start']), np.array(r['destroy']), np.array(r['application'])
+		if ylabel == 'Average Workflow Response Time (intervals)':
+			d = []
+			for wid in stats.completedWorkflows:
+				start = stats.completedWorkflows[wid]['startAt']
+				end = stats.completedWorkflows[wid]['destroyAt']
+				d.append(end - start)
+			Data[ylabel][model], CI[ylabel][model] = np.mean(d), mean_confidence_interval(d)
+		if ylabel == 'Average Workflow Response Time per application (intervals)':
+			d = [[], [], []]
+			for wid in stats.completedWorkflows:
+				start = stats.completedWorkflows[wid]['startAt']
+				end = stats.completedWorkflows[wid]['destroyAt']
+				app = stats.completedWorkflows[wid]['application'].split('/')[1].split('_')[0]
+				appid = apps.index(app)
+				d[appid].append(end - start)
+			means = [np.mean(i) for i in d]
+			devs  = [mean_confidence_interval(i) for i in d]
+			Data[ylabel][model], CI[ylabel][model] = means, devs
+		if ylabel == 'Average Workflow Accuracy':
+			d = []
+			for wid in stats.completedWorkflows:
+				result = stats.completedWorkflows[wid]['result']
+				d.append(result[0]/result[1])
+			Data[ylabel][model], CI[ylabel][model] = np.mean(d), mean_confidence_interval(d)
+		if ylabel == 'Average Workflow Accuracy per application':
+			d = [[], [], []]
+			for wid in stats.completedWorkflows:
+				result = stats.completedWorkflows[wid]['result']
+				app = stats.completedWorkflows[wid]['application'].split('/')[1].split('_')[0]
+				appid = apps.index(app)
+				d[appid].append(result[0]/result[1])
+			means = [np.mean(i) for i in d]
+			devs  = [mean_confidence_interval(i) for i in d]
+			Data[ylabel][model], CI[ylabel][model] = means, devs
+		if ylabel == 'Average Workflow Wait Time (intervals)':
+			d = []
+			for wid in stats.completedWorkflows:
+				start = stats.completedWorkflows[wid]['createAt']
+				end = stats.completedWorkflows[wid]['startAt']
+				d.append(end - start)
+			Data[ylabel][model], CI[ylabel][model] = np.mean(d), mean_confidence_interval(d)
+		if ylabel == 'Average Workflow Wait Time per application (intervals)':
+			d = [[], [], []]
+			for wid in stats.completedWorkflows:
+				start = stats.completedWorkflows[wid]['createAt']
+				end = stats.completedWorkflows[wid]['startAt']
+				app = stats.completedWorkflows[wid]['application'].split('/')[1].split('_')[0]
+				appid = apps.index(app)
+				d[appid].append(end - start)
+			means = [np.mean(i) for i in d]
+			devs  = [mean_confidence_interval(i) for i in d]
+			Data[ylabel][model], CI[ylabel][model] = means, devs
+		if ylabel == 'Decision per application (% Layer)':
+			d = [[], [], []]
+			for wid in stats.completedWorkflows:
+				app = stats.completedWorkflows[wid]['application'].split('/')[1].split('_')[0]
+				dec = stats.completedWorkflows[wid]['application'].split('/')[1].split('_')[1]
+				dec = 0 if dec == 'semantic' else 100
+				appid = apps.index(app)
+				d[appid].append(end - start)
+			means = [np.mean(i) for i in d]
+			devs  = [mean_confidence_interval(i) for i in d]
+			Data[ylabel][model], CI[ylabel][model] = means, devs
+		if 'f'  in env and ylabel == 'Fraction of total SLA Violations':
 			violations, total = 0, 0
-			for app in apps:
-				response_times = np.fmax(0, end[end!=-1] - start[end!=-1])[application[end!=-1] == 'shreshthtuli/'+app]
-				violations += len(response_times[response_times > sla[app]])
-				total += len(response_times)
-			Data[ylabel][model], CI[ylabel][model] = violations / (total+0.01), 0
-		if 'f' not in env and ylabel == 'Fraction of total SLA Violations':
-			r = stats.allcontainerinfo[-1] if stats else {'start': [], 'destroy': []}
-			start, end = np.array(r['start']), np.array(r['destroy'])
-			violations, total = 0, 0
-			response_times = np.fmax(0, end[end!=-1] - start[end!=-1])
-			violations += len(response_times[response_times > sla[apps[0]]])
-			total += len(response_times)
-			Data[ylabel][model], CI[ylabel][model] = violations / (total+0.01) if '*' not in model else 0, 0
+			for wid in stats.completedWorkflows:
+				start = stats.completedWorkflows[wid]['startAt']
+				end = stats.completedWorkflows[wid]['destroyAt']
+				violations += 1 if end - start > stats.completedWorkflows[wid]['sla'] else 0
+				total += 1
+			Data[ylabel][model], CI[ylabel][model] = violations / (total+1e-5), 0
 		if 'f' in env and ylabel == 'Fraction of SLA Violations per application':
-			r = stats.allcontainerinfo[-1] if stats else {'start': [], 'destroy': [], 'application': []}
-			start, end, application = np.array(r['start']), np.array(r['destroy']), np.array(r['application'])
-			violations = []
-			for app in apps:
-				response_times = np.fmax(0, end[end!=-1] - start[end!=-1])[application[end!=-1] == 'shreshthtuli/'+app]
-				violations.append(len(response_times[response_times > sla[app]])/(len(response_times)+0.001))
+			violations, total = [0, 0, 0], [0, 0, 0]
+			for wid in stats.completedWorkflows:
+				start = stats.completedWorkflows[wid]['startAt']
+				end = stats.completedWorkflows[wid]['destroyAt']
+				app = stats.completedWorkflows[wid]['application'].split('/')[1].split('_')[0]
+				appid = apps.index(app)
+				violations[appid] += 1 if end - start > stats.completedWorkflows[wid]['sla'] else 0
+				total[appid] += 1
+			violations = [violations[i]/(total[i]+1e-5) for i in range(len(apps))]
 			Data[ylabel][model], CI[ylabel][model] = violations, [0]*3
 		# Auxilliary metrics
 		if ylabel == 'Average Migration Time (seconds)':
@@ -290,7 +323,7 @@ for ylabel in yLabelsStatic:
 	plt.ylabel(ylabel.replace('%', '\%'))
 	values = [Data[ylabel][model] for model in Models]
 	errors = [CI[ylabel][model] for model in Models]
-	plt.ylim(0, max(values)+statistics.stdev(values))
+	# plt.ylim(0, max(values)+statistics.stdev(values))
 	p1 = plt.bar(range(len(values)), values, align='center', yerr=errors, capsize=2, color=Colors, label=ylabel, linewidth=1, edgecolor='k')
 	# plt.legend()
 	plt.xticks(range(len(values)), Models, rotation=rot)
@@ -372,6 +405,26 @@ for ylabel in yLabelsStatic:
 				errors.append(0 if 'array' in str(type(er)) else er)
 			Data[ylabel][model], CI[ylabel][model] = response_times, errors
 		# Auxilliary metrics
+		if ylabel == 'Average Workflow Response Time (intervals)':
+			d = []
+			for wid in stats.completedWorkflows:
+				start = stats.completedWorkflows[wid]['startAt']
+				end = stats.completedWorkflows[wid]['destroyAt']
+				d.append(end - start)
+			Data[ylabel][model], CI[ylabel][model] = d, mean_confidence_interval(d)
+		if ylabel == 'Average Workflow Accuracy':
+			d = []
+			for wid in stats.completedWorkflows:
+				result = stats.completedWorkflows[wid]['result']
+				d.append(result[0]/result[1])
+			Data[ylabel][model], CI[ylabel][model] = d, mean_confidence_interval(d)
+		if ylabel == 'Average Workflow Wait Time (intervals)':
+			d = []
+			for wid in stats.completedWorkflows:
+				start = stats.completedWorkflows[wid]['createAt']
+				end = stats.completedWorkflows[wid]['startAt']
+				d.append(end - start)
+			Data[ylabel][model], CI[ylabel][model] = d, mean_confidence_interval(d)
 		if ylabel == 'Average Migration Time (seconds)':
 			d = np.array([i['avgmigrationtime'] for i in stats.metrics]) if stats else np.array([0])
 			d2 = np.array([i['numdestroyed'] for i in stats.metrics]) if stats else np.array([1])
@@ -481,6 +534,26 @@ for ylabel in yLabelsStatic:
 			Data[ylabel][model], CI[ylabel][model] = d/(d2+0.001), mean_confidence_interval(d/(d2+0.001))
 		# SLA Violations, Cost (USD)
 		# Auxilliary metrics
+		if ylabel == 'Average Workflow Response Time (intervals)':
+			d = []
+			for wid in stats.completedWorkflows:
+				start = stats.completedWorkflows[wid]['startAt']
+				end = stats.completedWorkflows[wid]['destroyAt']
+				d.append(end - start)
+			Data[ylabel][model], CI[ylabel][model] = np.array(d), 0
+		if ylabel == 'Average Workflow Accuracy':
+			d = []
+			for wid in stats.completedWorkflows:
+				result = stats.completedWorkflows[wid]['result']
+				d.append(result[0]/result[1])
+			Data[ylabel][model], CI[ylabel][model] = np.array(d), 0
+		if ylabel == 'Average Workflow Wait Time (intervals)':
+			d = []
+			for wid in stats.completedWorkflows:
+				start = stats.completedWorkflows[wid]['createAt']
+				end = stats.completedWorkflows[wid]['startAt']
+				d.append(end - start)
+			Data[ylabel][model], CI[ylabel][model] = np.array(d), 0
 		if ylabel == 'Average Execution Time (seconds)':
 			d = np.array([max(0, i['avgresponsetime']) for i in stats.metrics]) if stats else np.array([0])
 			d1 = np.array([i['avgmigrationtime'] for i in stats.metrics]) if stats else np.array([0])
