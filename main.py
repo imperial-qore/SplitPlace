@@ -47,13 +47,13 @@ parser.add_option("-m", "--mode", action="store", dest="mode", default="0",
 opts, args = parser.parse_args()
 
 # Global constants
-NUM_SIM_STEPS = 300
+NUM_SIM_STEPS = 100
 HOSTS = 10 * 5 if opts.env == '' else 10
 CONTAINERS = HOSTS
 TOTAL_POWER = 1000
 ROUTER_BW = 10000
 INTERVAL_TIME = 300 # seconds
-NEW_CONTAINERS = 2 if HOSTS == 10 else 5
+NEW_CONTAINERS = 1.2 if HOSTS == 10 else 5
 DB_NAME = ''
 DB_HOST = ''
 DB_PORT = 0
