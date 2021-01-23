@@ -88,6 +88,7 @@ for model in Models:
 				with open(PATH + model.replace('*', '2') + '/' + file, 'rb') as handle:
 				    stats = pickle.load(handle)
 				all_stats_list.append(stats)
+				print(stats.completedWorkflows)
 				break
 	except:
 		all_stats_list.append(None)
