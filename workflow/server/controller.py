@@ -81,7 +81,7 @@ class RequestHandler():
                     "time": datetime.utcnow().isoformat(sep='T'),
                 } if 'server_error' not in data else {}
         self.env.logger.debug(datapoint)
-        if 'server_error' not in data: self.db.insert([datapoint])
+        # if 'server_error' not in data: self.db.insert([datapoint])
         return datapoint, message
                
     def getContainerStat(self, hostIP):
@@ -100,7 +100,7 @@ class RequestHandler():
                         "time": datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S'),
                     })
         self.env.logger.debug(datapoints)
-        if 'server_error' not in data: self.db.insert(datapoints)
+        # if 'server_error' not in data: self.db.insert(datapoints)
         return datapoints, message
             
     def checkpoint(self, ccid, cid, cur_host_ip):
