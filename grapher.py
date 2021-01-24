@@ -61,7 +61,7 @@ colors = ['r', 'g', 'b']
 
 plt.rcParams["figure.figsize"] = 3,1.5
 def reduce2(l):
-	n = 15
+	n = 12
 	res = []
 	low, high = [], []
 	for i in range(0, len(l)):
@@ -116,6 +116,8 @@ def plot_graphs(data):
 
 ## MAB graphs
 decider = MABDecider()
+# for i in range(-30, 0): decider.model[i][3][2][1] -= 0.06
+# decider.save_model()
 print(decider.model[-1])
 plot_graphs(decider.model)
 

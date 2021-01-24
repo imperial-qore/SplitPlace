@@ -46,7 +46,7 @@ class SPW(Workload):
     def generateNewWorkflows(self, interval):
         workflowlist = []
         workflows = ['MNIST', 'FashionMNIST', 'CIFAR100']
-        min_sla, layer_intervals = 2, [7, 9, 15]
+        min_sla, layer_intervals = 2, [7, 9, 14]
         max_sla = [i + (i - min_sla) for i in layer_intervals]
         max_sla_dict = dict(zip(workflows, max_sla))
         minimum_workflows = 1 if interval == 0 else 0
