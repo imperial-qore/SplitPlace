@@ -17,9 +17,12 @@ from stats.Stats import *
 import seaborn as sns
 from pprint import pprint
 from utils.Utils import *
+from utils.ColorUtils import *
 import os
 import fnmatch
 from sys import argv
+
+from decider.MABDecider import MABDecider
 
 plt.style.use(['science', 'ieee'])
 plt.rcParams["text.usetex"] = True
@@ -50,10 +53,77 @@ def mean_confidence_interval(data, confidence=0.90):
     h = scipy.stats.sem(a) * scipy.stats.t.ppf((1 + confidence) / 2., n-1)
     return h
 
+
 PATH = 'all_datasets/' + env + '/'
 SAVE_PATH = 'results/' + env + '/'
 
-Models = ['Test', 'Test', 'Test'] 
+colors = ['r', 'g', 'b']
+
+plt.rcParams["figure.figsize"] = 3,1.5
+def reduce2(l):
+	n = 15
+	res = []
+	low, high = [], []
+	for i in range(0, len(l)):
+		res.append(statistics.mean(l[max(0, i-n):min(len(l), i+n)]))
+		low.append(min(l[max(0, i-n):min(len(l), i+n)])); high.append(max(l[max(0, i-n):min(len(l), i+n)]))
+	return res, low, high
+
+def plot(dats, labels, title, twin=False):
+	plt.xlabel('Intervals')
+	if not twin: plt.ylabel(title)
+	if twin: plt.ylabel('Epsilon')
+	for i, dat in enumerate(dats):
+		dat, low, high = reduce2(dat)
+		low, _, _ = reduce2(low); high, _, _ = reduce2(high)
+		plt.plot(range(len(dat)), dat, label=labels[i], color=colors[i], linewidth=1)
+		plt.fill_between(range(len(dat)), low, high, color=colors[i], alpha=.2)
+		if twin and i == 0: 
+			ax = plt.axes()
+			ax.yaxis.label.set_color(colors[i])
+			ax.tick_params(axis='y', colors=colors[i])
+			ax = plt.twinx()
+			plt.ylabel('Reward Threshold')
+			ax.yaxis.label.set_color(colors[i+1])
+			ax.tick_params(axis='y', colors=colors[i+1])
+	if not twin: plt.legend(loc=9, bbox_to_anchor=(0.5, 1.27), ncol=len(dats), columnspacing=1)
+	plt.tight_layout()
+	plt.savefig('results/MAB/'+title.replace(' ', '_')+'.pdf')
+	plt.clf()
+
+def plot_graphs(data):
+	applications = ['MNIST', 'FashionMNIST', 'CIFAR100']
+	layer_intervals = {}
+	for app in applications:
+		dat = [i[0][app.lower()] for i in data]
+		layer_intervals[app] = [0]*10 + dat
+	epsilon = [i[1] for i in data]
+	r_thresh = [i[2] for i in data]
+	low_rewards, low_counts, high_rewards, high_counts = {}, {}, {}, {}
+	all_arrays = [i[3] for i in data]
+	choices = ['layer', 'semantic']
+	for d, decision in enumerate(choices):
+		low_rewards[decision] = [i[0][d] for i in all_arrays]
+		low_counts[decision] = [i[1][d] for i in all_arrays]
+		high_rewards[decision] = [i[2][d] for i in all_arrays]
+		high_counts[decision] = [i[3][d] for i in all_arrays]
+	plot([epsilon, r_thresh], ['Epsilon', 'Reward Threshold'], 'Decay Parameters', True)
+	plot([layer_intervals[i] for i in applications], applications, 'Average Response Time')
+	plot([low_rewards[i] for i in choices], choices, 'Rewards (low setting)')
+	plot([low_counts[i] for i in choices], choices, 'Counts (low setting)')
+	plot([high_rewards[i] for i in choices], choices, 'Rewards (high setting)')
+	plot([high_counts[i] for i in choices], choices, 'Counts (high setting)')
+
+## MAB graphs
+decider = MABDecider()
+print(decider.model[-1])
+plot_graphs(decider.model)
+
+exit()
+
+plt.rcParams["figure.figsize"] = 3.3,2.5
+
+Models = ['Test', 'Test', 'Test', 'Test', 'Test', 'Test'] 
 rot = 15
 xLabel = 'Simulation Time (minutes)'
 Colors = ['red', 'blue', 'green', 'orange', 'orchid', 'pink', 'cyan']
@@ -158,9 +228,9 @@ for ylabel in yLabelsStatic:
 		if ylabel == 'Fairness':
 			d = np.array([fairness(np.array(i['ips'])) for i in stats.activecontainerinfo]) if stats else np.array([0])
 			Data[ylabel][model], CI[ylabel][model] = np.mean(d), mean_confidence_interval(d)
-		if ylabel == "Fairness (Jain's index)":
-			d = np.array([jains_fairness(np.array(i['ips'])) for i in stats.activecontainerinfo]) if stats else np.array([0])
-			Data[ylabel][model], CI[ylabel][model] = np.mean(d), mean_confidence_interval(d)
+		# if ylabel == "Fairness (Jain's index)":
+		# 	d = np.array([jains_fairness(np.array(i['ips'])) for i in stats.activecontainerinfo]) if stats else np.array([0])
+		# 	Data[ylabel][model], CI[ylabel][model] = np.mean(d), mean_confidence_interval(d)
 		if 'f' in env and ylabel == 'Fairness per application':
 			r = stats.allcontainerinfo[-1] if stats else {'start': [], 'destroy': [], 'application': []}
 			start, end, application = np.array(r['start']), np.array(r['destroy']), np.array(r['application'])
@@ -233,7 +303,7 @@ for ylabel in yLabelsStatic:
 				dec = stats.completedWorkflows[wid]['application'].split('/')[1].split('_')[1]
 				dec = 0 if dec == 'semantic' else 100
 				appid = apps.index(app)
-				d[appid].append(end - start)
+				d[appid].append(dec)
 			means = [np.mean(i) for i in d]
 			devs  = [mean_confidence_interval(i) for i in d]
 			Data[ylabel][model], CI[ylabel][model] = means, devs
@@ -308,6 +378,7 @@ for ylabel in yLabelsStatic:
 			d = np.array([i['migrationTime'] for i in stats.schedulerinfo]) if stats else np.array([0.])
 			Data[ylabel][model], CI[ylabel][model] = np.sum(d), mean_confidence_interval(d)
 
+# exit()
 # Bar Graphs
 x = range(5,100*5,5)
 pprint(Data)
@@ -324,7 +395,7 @@ for ylabel in yLabelsStatic:
 	plt.ylabel(ylabel.replace('%', '\%'))
 	values = [Data[ylabel][model] for model in Models]
 	errors = [CI[ylabel][model] for model in Models]
-	# plt.ylim(0, max(values)+statistics.stdev(values))
+	plt.ylim(0, max(values)+statistics.stdev(values))
 	p1 = plt.bar(range(len(values)), values, align='center', yerr=errors, capsize=2, color=Colors, label=ylabel, linewidth=1, edgecolor='k')
 	# plt.legend()
 	plt.xticks(range(len(values)), Models, rotation=rot)
