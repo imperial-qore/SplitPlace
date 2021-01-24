@@ -121,7 +121,7 @@ decider = MABDecider()
 print(decider.model[-1])
 plot_graphs(decider.model)
 
-exit()
+# exit()
 
 plt.rcParams["figure.figsize"] = 3.3,2.5
 
@@ -160,7 +160,8 @@ for model in Models:
 				with open(PATH + model.replace('*', '2') + '/' + file, 'rb') as handle:
 				    stats = pickle.load(handle)
 				all_stats_list.append(stats)
-				print(stats.completedWorkflows)
+				pprint(stats.completedWorkflows)
+				# exit()
 				break
 	except:
 		all_stats_list.append(None)
@@ -268,15 +269,18 @@ for ylabel in yLabelsStatic:
 			d = []
 			for wid in stats.completedWorkflows:
 				result = stats.completedWorkflows[wid]['result']
-				d.append(result[0]/result[1])
+				app = stats.completedWorkflows[wid]['application'].split('/')[1].split('_')[0]
+				total = 6300 * 0.5 * result[1] / 10000 if 'cifar' in app else result[1]
+				d.append(result[0]/total)
 			Data[ylabel][model], CI[ylabel][model] = np.mean(d), mean_confidence_interval(d)
 		if ylabel == 'Average Workflow Accuracy per application':
 			d = [[], [], []]
 			for wid in stats.completedWorkflows:
 				result = stats.completedWorkflows[wid]['result']
 				app = stats.completedWorkflows[wid]['application'].split('/')[1].split('_')[0]
+				total = 6300 * 0.5 * result[1] / 10000 if 'cifar' in app else result[1]
 				appid = apps.index(app)
-				d[appid].append(result[0]/result[1])
+				d[appid].append(result[0]/total)
 			means = [np.mean(i) for i in d]
 			devs  = [mean_confidence_interval(i) for i in d]
 			Data[ylabel][model], CI[ylabel][model] = means, devs
@@ -490,7 +494,9 @@ for ylabel in yLabelsStatic:
 			d = []
 			for wid in stats.completedWorkflows:
 				result = stats.completedWorkflows[wid]['result']
-				d.append(result[0]/result[1])
+				app = stats.completedWorkflows[wid]['application'].split('/')[1].split('_')[0]
+				total = 6300 * 0.5 * result[1] / 10000 if 'cifar' in app else result[1]
+				d.append(result[0]/total)
 			Data[ylabel][model], CI[ylabel][model] = d, mean_confidence_interval(d)
 		if ylabel == 'Average Workflow Wait Time (intervals)':
 			d = []
@@ -619,7 +625,9 @@ for ylabel in yLabelsStatic:
 			d = []
 			for wid in stats.completedWorkflows:
 				result = stats.completedWorkflows[wid]['result']
-				d.append(result[0]/result[1])
+				app = stats.completedWorkflows[wid]['application'].split('/')[1].split('_')[0]
+				total = 6300 * 0.5 * result[1] / 10000 if 'cifar' in app else result[1]
+				d.append(result[0]/total)
 			Data[ylabel][model], CI[ylabel][model] = np.array(d), 0
 		if ylabel == 'Average Workflow Wait Time (intervals)':
 			d = []
