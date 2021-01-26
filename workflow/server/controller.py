@@ -88,7 +88,7 @@ class RequestHandler():
         message = "Container stats collected successfully"
         data = rclient.HandleRequest({"opcode": "ContainerStat"}, hostIP, self.env)
         datapoints = []
-        if 'server_error' not in data:
+        if 'server_error' not in data and 'message' not in data:
             for container_dict in data['stats']:
                 datapoints.append({
                         "measurement": "ContainerStat",
