@@ -11,16 +11,22 @@ class PONDScheduler(Scheduler):
 		self.data_type = data_type
 		self.num_hosts = int(data_type.split('_')[-1])
 		self.r = {
-					'shreshthtuli/yolo': [0]*self.num_hosts, 
-					'shreshthtuli/pocketsphinx': [0]*self.num_hosts, 
-					'shreshthtuli/aeneas':[0]*self.num_hosts
+					'shreshthtuli/mnist_layer': [0]*self.num_hosts, 
+					'shreshthtuli/fashionmnist_layer': [0]*self.num_hosts, 
+					'shreshthtuli/cifar100_layer':[0]*self.num_hosts,
+					'shreshthtuli/mnist_semantic': [0]*self.num_hosts, 
+					'shreshthtuli/fashionmnist_semantic': [0]*self.num_hosts, 
+					'shreshthtuli/cifar100_semantic':[0]*self.num_hosts
 				}
 		self.n = {
-					'shreshthtuli/yolo': [0.001]*self.num_hosts, 
-					'shreshthtuli/pocketsphinx': [0.001]*self.num_hosts, 
-					'shreshthtuli/aeneas':[0.001]*self.num_hosts
+					'shreshthtuli/mnist_layer': [0.001]*self.num_hosts, 
+					'shreshthtuli/fashionmnist_layer': [0.001]*self.num_hosts, 
+					'shreshthtuli/cifar100_layer':[0.001]*self.num_hosts,
+					'shreshthtuli/mnist_semantic': [0.001]*self.num_hosts, 
+					'shreshthtuli/fashionmnist_semantic': [0.001]*self.num_hosts, 
+					'shreshthtuli/cifar100_semantic':[0.001]*self.num_hosts
 				}
-		self.apps = ['shreshthtuli/yolo', 'shreshthtuli/pocketsphinx', 'shreshthtuli/aeneas']
+		self.apps = ['shreshthtuli/mnist_layer', 'shreshthtuli/fashionmnist_layer', 'shreshthtuli/cifar100_layer', 'shreshthtuli/mnist_semantic', ' shreshthtuli/fashionmnist_semantic', 'shreshthtuli/cifar100_semantic']
 		self.default_app = self.apps[0]
 
 	def calc_weight(self, alloc):
