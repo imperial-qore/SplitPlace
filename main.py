@@ -78,11 +78,11 @@ def initalizeEnvironment(environment, logger):
 
 	# Initialize splitnet decision moduele
 	''' Can be Random, SemanticOnly, LayerOnly '''
-	decider = LayerOnlyDecider()
+	decider = MABDecider()
 	
 	# Initialize scheduler
 	''' Can be LRMMTR, RF, RL, RM, Random, RLRMMTR, TMCR, TMMR, TMMTR, GA, GOBI (arg = 'energy_latency_'+str(HOSTS)) '''
-	scheduler = PONDScheduler('energy_latency_'+str(HOSTS))
+	scheduler = GOBIScheduler('energy_latency_'+str(HOSTS))
 
 	# Initialize Environment
 	hostlist = datacenter.generateHosts()
