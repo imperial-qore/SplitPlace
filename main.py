@@ -27,6 +27,7 @@ from decider.MABDecider import MABDecider
 # Scheduler imports
 from scheduler.MAD_MC_Random import MADMCRScheduler
 from scheduler.Random_Random_Random import RandomScheduler
+from scheduler.POND import PONDScheduler
 from scheduler.GOBI import GOBIScheduler
 from scheduler.GOBI2 import GOBI2Scheduler
 from scheduler.DAGOBI import DAGOBIScheduler
@@ -77,11 +78,11 @@ def initalizeEnvironment(environment, logger):
 
 	# Initialize splitnet decision moduele
 	''' Can be Random, SemanticOnly, LayerOnly '''
-	decider = RandomDecider()
+	decider = LayerOnlyDecider()
 	
 	# Initialize scheduler
 	''' Can be LRMMTR, RF, RL, RM, Random, RLRMMTR, TMCR, TMMR, TMMTR, GA, GOBI (arg = 'energy_latency_'+str(HOSTS)) '''
-	scheduler = DAGOBIScheduler('energy_latency_'+str(HOSTS))
+	scheduler = PONDScheduler('energy_latency_'+str(HOSTS))
 
 	# Initialize Environment
 	hostlist = datacenter.generateHosts()
