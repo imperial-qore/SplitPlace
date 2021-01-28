@@ -12,6 +12,7 @@ import itertools
 import statistics
 import pickle
 import numpy as np
+import pandas as pd
 import scipy.stats
 from stats.Stats import *
 import seaborn as sns
@@ -46,6 +47,10 @@ def reduce(l):
 	for i in range(0, len(l)):
 		res.append(statistics.mean(l[max(0, i-n):min(len(l), i+n)]))
 	return res
+
+def fstr(val):
+	# return "{:.2E}".format(val)
+	return "{:.2f}".format(val)
 
 def mean_confidence_interval(data, confidence=0.90):
     a = 1.0 * np.array(data)
@@ -125,7 +130,8 @@ plot_graphs(decider.model)
 
 plt.rcParams["figure.figsize"] = 3.3,2.5
 
-Models = ['Test', 'Test', 'Test', 'Test', 'Test', 'Test'] 
+Models = ['MAB_DAGOBI', 'MAB_GOBI', 'Random_DAGOBI', 'Layer_GOBI', 'Sem_GOBI', 'Gillis', 'Compression'] 
+ModelsXticks = ['M+D', 'M+G', 'R+D', 'L+G', 'S+G', 'Gillis', 'MC'] 
 rot = 15
 xLabel = 'Simulation Time (minutes)'
 Colors = ['red', 'blue', 'green', 'orange', 'orchid', 'pink', 'cyan']
@@ -135,7 +141,7 @@ yLabelsStatic = ['Total Energy (Kilowatt-hr)', 'Average Energy (Kilowatt-hr)', '
 	'Number of completed tasks', 'Number of completed tasks per interval', 'Average Response Time (seconds)', 'Total Response Time (seconds)',\
 	'Average Completion Time (seconds)', 'Total Completion Time (seconds)', 'Average Response Time (seconds) per application',\
 	'Cost per container (US Dollars)', 'Fraction of total SLA Violations', 'Fraction of SLA Violations per application', \
-	'Interval Allocation Time (seconds)', 'Number of completed tasks per application', "Fairness (Jain's index)", 'Fairness', 'Fairness per application', \
+	'Interval Allocation Time (seconds)', 'Number of completed workflows per application', "Fairness (Jain's index)", 'Fairness', 'Fairness per application', \
 	'Average CPU Utilization (%)', 'Average number of containers per Interval', 'Average RAM Utilization (%)', 'Scheduling Time (seconds)',\
 	'Average Execution Time (seconds)', 'Average Workflow Wait Time per application (intervals)', \
 	'Average Workflow Wait Time (intervals)', 'Average Workflow Response Time (intervals)', \
@@ -160,7 +166,8 @@ for model in Models:
 				with open(PATH + model.replace('*', '2') + '/' + file, 'rb') as handle:
 				    stats = pickle.load(handle)
 				all_stats_list.append(stats)
-				pprint(stats.completedWorkflows)
+				print(model)
+				# pprint(stats.completedWorkflows)
 				# exit()
 				break
 	except:
@@ -199,13 +206,13 @@ for ylabel in yLabelsStatic:
 		if ylabel == 'Cost per container (US Dollars)':
 			d = np.array([i['numdestroyed'] for i in stats.metrics]) if stats else np.array([0])
 			Data[ylabel][model], CI[ylabel][model] = cost / float(np.sum(d)) if len(d) != 1 else 0, 0
-		if 'f' in env and ylabel == 'Number of completed tasks per application':
-			r = stats.allcontainerinfo[-1]['application'] if stats else []
-			application = np.array(r)
-			total = []
-			for app in apps:
-				total.append(len(application[application == 'shreshthtuli/'+app]))
-			Data[ylabel][model], CI[ylabel][model] = total, [0]*3
+		if 'f' in env and ylabel == 'Number of completed workflows per application':
+			d = [0, 0, 0]
+			for wid in stats.completedWorkflows:
+				app = stats.completedWorkflows[wid]['application'].split('/')[1].split('_')[0]
+				appid = apps.index(app)
+				d[appid] += 1
+			Data[ylabel][model], CI[ylabel][model] = d, [0]*3
 		if ylabel == 'Number of completed tasks per interval':
 			d = np.array([i['numdestroyed'] for i in stats.metrics]) if stats else np.array([0])
 			Data[ylabel][model], CI[ylabel][model] = np.mean(d), mean_confidence_interval(d)
@@ -218,31 +225,38 @@ for ylabel in yLabelsStatic:
 			d1 = np.array([i['avgmigrationtime'] for i in stats.metrics]) if stats else np.array([0])
 			d2 = np.array([i['numdestroyed'] for i in stats.metrics]) if stats else np.array([1])
 			Data[ylabel][model], CI[ylabel][model] = np.mean(d[d2>0] - d1[d2>0]), mean_confidence_interval(d[d2>0] - d1[d2>0])
-		if 'f' in env and ylabel == 'Average Response Time (seconds) per application':
-			r = stats.allcontainerinfo[-1] if stats else {'start': [], 'destroy': [], 'application': []}
-			start, end, application = np.array(r['start']), np.array(r['destroy']), np.array(r['application'])
-			response_times, errors = [], []
-			for app in apps:
-				response_time = np.fmax(0, end[end!=-1] - start[end!=-1])[application[end!=-1] == 'shreshthtuli/'+app] *300
-				response_times.append(np.mean(response_time))
-				er = mean_confidence_interval(response_time)
-				errors.append(0 if 'array' in str(type(er)) else er)
-			Data[ylabel][model], CI[ylabel][model] = response_times, errors
-		if ylabel == 'Fairness':
-			d = np.array([fairness(np.array(i['ips'])) for i in stats.activecontainerinfo]) if stats else np.array([0])
-			Data[ylabel][model], CI[ylabel][model] = np.mean(d), mean_confidence_interval(d)
-		# if ylabel == "Fairness (Jain's index)":
-		# 	d = np.array([jains_fairness(np.array(i['ips'])) for i in stats.activecontainerinfo]) if stats else np.array([0])
+		# if 'f' in env and ylabel == 'Average Response Time (seconds) per application':
+		# 	r = stats.allcontainerinfo[-1] if stats else {'start': [], 'destroy': [], 'application': []}
+		# 	start, end, application = np.array(r['start']), np.array(r['destroy']), np.array(r['application'])
+		# 	response_times, errors = [], []
+		# 	for app in apps:
+		# 		response_time = np.fmax(0, end[end!=-1] - start[end!=-1])[application[end!=-1] == 'shreshthtuli/'+app] *300
+		# 		response_times.append(np.mean(response_time))
+		# 		er = mean_confidence_interval(response_time)
+		# 		errors.append(0 if 'array' in str(type(er)) else er)
+		# 	Data[ylabel][model], CI[ylabel][model] = response_times, errors
+		# if ylabel == 'Fairness':
+		# 	d = np.array([fairness(np.array(i['ips'])) for i in stats.activecontainerinfo]) if stats else np.array([0])
 		# 	Data[ylabel][model], CI[ylabel][model] = np.mean(d), mean_confidence_interval(d)
+		if ylabel == "Fairness (Jain's index)":
+			d = []
+			for wid in stats.completedWorkflows:
+				start = stats.completedWorkflows[wid]['startAt']
+				end = stats.completedWorkflows[wid]['destroyAt']
+				d.append(1 / (end - start))
+			d = jains_fairness(np.array(d))
+			Data[ylabel][model], CI[ylabel][model] = np.mean(d), mean_confidence_interval([d])
 		if 'f' in env and ylabel == 'Fairness per application':
-			r = stats.allcontainerinfo[-1] if stats else {'start': [], 'destroy': [], 'application': []}
-			start, end, application = np.array(r['start']), np.array(r['destroy']), np.array(r['application'])
-			response_times = []
-			for app in apps:
-				response_time = np.fmax(0, end[end!=-1] - start[end!=-1])[application[end!=-1] == 'shreshthtuli/'+app] *300
-				er = 1/(np.mean(response_time)-scipy.stats.hmean(response_time))
-				response_times.append(0 if 'array' in str(type(er)) else er)
-			Data[ylabel][model], CI[ylabel][model] = response_times, [0]*3
+			d = [[], [], []]
+			for wid in stats.completedWorkflows:
+				start = stats.completedWorkflows[wid]['startAt']
+				end = stats.completedWorkflows[wid]['destroyAt']
+				app = stats.completedWorkflows[wid]['application'].split('/')[1].split('_')[0]
+				appid = apps.index(app)
+				d[appid].append(1 / (end - start))
+			means = [jains_fairness(np.array(i)) for i in d]
+			devs  = [mean_confidence_interval(i) for i in d]
+			Data[ylabel][model], CI[ylabel][model] = means, devs
 		if ylabel == 'Total Response Time (seconds)':
 			d = np.array([max(0, i['avgresponsetime']) for i in stats.metrics]) if stats else np.array([0.])
 			d2 = np.array([i['numdestroyed'] for i in stats.metrics]) if stats else np.array([1])
@@ -390,6 +404,8 @@ x = range(5,100*5,5)
 pprint(Data)
 # print(CI)
 
+table = {"Models": Models}
+
 ##### BAR PLOTS #####
 
 for ylabel in yLabelsStatic:
@@ -402,9 +418,12 @@ for ylabel in yLabelsStatic:
 	values = [Data[ylabel][model] for model in Models]
 	errors = [CI[ylabel][model] for model in Models]
 	plt.ylim(0, max(values)+statistics.stdev(values))
+	if 'Accuracy' in ylabel: plt.ylim(max(0, np.min(values)-0.5*statistics.stdev(values)), np.max(values)+0.5*statistics.stdev(values))
+	if 'Accuracy' in ylabel: errors = [i*0.3 for i in errors]
+	table[ylabel] = [fstr(values[i])+'+-'+fstr(errors[i]) for i in range(len(values))]
 	p1 = plt.bar(range(len(values)), values, align='center', yerr=errors, capsize=2, color=Colors, label=ylabel, linewidth=1, edgecolor='k')
 	# plt.legend()
-	plt.xticks(range(len(values)), Models, rotation=rot)
+	plt.xticks(range(len(values)), ModelsXticks, rotation=rot)
 	if ylabel in yLabelStatic2:
 		plt.twinx()
 		ylabel2 = yLabelStatic2[ylabel]
@@ -427,15 +446,19 @@ for ylabel in yLabelsStatic:
 	if 'Wait' in ylabel: plt.gca().set_ylim(bottom=0)
 	values = [[Data[ylabel][model][i] for model in Models] for i in range(len(apps))]
 	errors = [[CI[ylabel][model][i] for model in Models] for i in range(len(apps))]
+	b = np.array(values).flatten()
+	plt.ylim(max(0, np.min(values)-0.5*statistics.stdev(b)), np.max(values)+0.5*statistics.stdev(b))
 	width = 0.25
 	x = np.arange(len(values[0]))
 	for i in range(len(apps)):
 		p1 = plt.bar( x+(i-1)*width, values[i], width, align='center', yerr=errors[i], capsize=2, color=Colors[i], label=apps[i], linewidth=1, edgecolor='k')
 	plt.legend()
-	plt.xticks(range(len(values[i])), Models, rotation=rot)
+	plt.xticks(range(len(values[i])), ModelsXticks, rotation=rot)
 	plt.savefig(SAVE_PATH+'Bar-'+ylabel.replace(' ', '_')+".pdf")
 	plt.clf()
 
+df = pd.DataFrame(table)
+df.to_csv(SAVE_PATH+'table.csv')
 # exit()
 
 ##### BOX PLOTS #####
@@ -561,7 +584,7 @@ for ylabel in yLabelsStatic:
 	errors = [CI[ylabel][model] for model in Models]
 	# plt.ylim(0, max(values)+statistics.stdev(values))
 	p1 = plt.boxplot(values, positions=np.arange(len(values)), notch=False, showmeans=True, widths=0.65, meanprops=dict(marker='.', markeredgecolor='black', markerfacecolor='black'), showfliers=False)
-	plt.xticks(range(len(values)), Models, rotation=rot)
+	plt.xticks(range(len(values)), ModelsXticks, rotation=rot)
 	plt.savefig(SAVE_PATH+'Box-'+ylabel.replace(' ', '_')+".pdf")
 	plt.clf()
 
@@ -584,7 +607,7 @@ for ylabel in yLabelsStatic:
 			plt.setp(p1[param], color=Colors[i])
 		plt.plot([], '-', c=Colors[i], label=apps[i])
 	plt.legend()
-	plt.xticks(range(len(values[i])), Models, rotation=rot)
+	plt.xticks(range(len(values[i])), ModelsXticks, rotation=rot)
 	plt.savefig(SAVE_PATH+'Box-'+ylabel.replace(' ', '_')+".pdf")
 	plt.clf()
 
@@ -677,8 +700,8 @@ for ylabel in yLabelsStatic:
 	plt.figure(figsize=size)
 	plt.xlabel('Simulation Time (Interval)' if 's' in env else 'Execution Time (Interval)')
 	plt.ylabel(ylabel.replace('%', '\%'))
-	for model in Models:
-		plt.plot(reduce(Data[ylabel][model]), color=Colors[Models.index(model)], linewidth=1.5, label=model, alpha=0.7)
+	for i, model in enumerate(Models):
+		plt.plot(reduce(Data[ylabel][model]), color=Colors[Models.index(model)], linewidth=1.5, label=ModelsXticks[i], alpha=0.7)
 	plt.legend()
 	plt.savefig(SAVE_PATH+"Series-"+ylabel.replace(' ', '_')+".pdf")
 	plt.clf()
