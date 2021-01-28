@@ -528,6 +528,36 @@ for ylabel in yLabelsStatic:
 				end = stats.completedWorkflows[wid]['startAt']
 				d.append(end - start)
 			Data[ylabel][model], CI[ylabel][model] = d, mean_confidence_interval(d)
+		if ylabel == 'Average Workflow Response Time per application (intervals)':
+			d = [[], [], []]
+			for wid in stats.completedWorkflows:
+				start = stats.completedWorkflows[wid]['startAt']
+				end = stats.completedWorkflows[wid]['destroyAt']
+				app = stats.completedWorkflows[wid]['application'].split('/')[1].split('_')[0]
+				appid = apps.index(app)
+				d[appid].append(end - start)
+			devs  = [mean_confidence_interval(i) for i in d]
+			Data[ylabel][model], CI[ylabel][model] = d, devs
+		if ylabel == 'Average Workflow Accuracy per application':
+			d = [[], [], []]
+			for wid in stats.completedWorkflows:
+				result = stats.completedWorkflows[wid]['result']
+				app = stats.completedWorkflows[wid]['application'].split('/')[1].split('_')[0]
+				total = 6300 * 0.5 * result[1] / 10000 if 'cifar' in app else result[1]
+				appid = apps.index(app)
+				d[appid].append(result[0]/total)
+			devs  = [mean_confidence_interval(i) for i in d]
+			Data[ylabel][model], CI[ylabel][model] = d, devs
+		if ylabel == 'Average Workflow Wait Time per application (intervals)':
+			d = [[], [], []]
+			for wid in stats.completedWorkflows:
+				start = stats.completedWorkflows[wid]['createAt']
+				end = stats.completedWorkflows[wid]['startAt']
+				app = stats.completedWorkflows[wid]['application'].split('/')[1].split('_')[0]
+				appid = apps.index(app)
+				d[appid].append(end - start)
+			devs  = [mean_confidence_interval(i) for i in d]
+			Data[ylabel][model], CI[ylabel][model] = d, devs
 		if ylabel == 'Average Migration Time (seconds)':
 			d = np.array([i['avgmigrationtime'] for i in stats.metrics]) if stats else np.array([0])
 			d2 = np.array([i['numdestroyed'] for i in stats.metrics]) if stats else np.array([1])
