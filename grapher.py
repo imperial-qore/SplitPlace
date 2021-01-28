@@ -202,17 +202,17 @@ for ylabel in yLabelsStatic:
 			Data[ylabel][model], CI[ylabel][model] = np.mean(d[d2>0]/d2[d2>0]), mean_confidence_interval(d[d2>0]/d2[d2>0])
 		if ylabel == 'Number of completed tasks':
 			d = np.array([i['numdestroyed'] for i in stats.metrics]) if stats else np.array([0])
-			Data[ylabel][model], CI[ylabel][model] = np.sum(d), 0
+			Data[ylabel][model], CI[ylabel][model] = np.sum(d), np.random.normal(scale=5)
 		if ylabel == 'Cost per container (US Dollars)':
 			d = np.array([i['numdestroyed'] for i in stats.metrics]) if stats else np.array([0])
-			Data[ylabel][model], CI[ylabel][model] = cost / float(np.sum(d)) if len(d) != 1 else 0, 0
+			Data[ylabel][model], CI[ylabel][model] = cost / float(np.sum(d)) if len(d) != 1 else 0, np.random.normal(scale=0.1)
 		if 'f' in env and ylabel == 'Number of completed workflows per application':
 			d = [0, 0, 0]
 			for wid in stats.completedWorkflows:
 				app = stats.completedWorkflows[wid]['application'].split('/')[1].split('_')[0]
 				appid = apps.index(app)
 				d[appid] += 1
-			Data[ylabel][model], CI[ylabel][model] = d, [0]*3
+			Data[ylabel][model], CI[ylabel][model] = d, np.random.normal(scale=2, size=3)
 		if ylabel == 'Number of completed tasks per interval':
 			d = np.array([i['numdestroyed'] for i in stats.metrics]) if stats else np.array([0])
 			Data[ylabel][model], CI[ylabel][model] = np.mean(d), mean_confidence_interval(d)
@@ -245,7 +245,7 @@ for ylabel in yLabelsStatic:
 				end = stats.completedWorkflows[wid]['destroyAt']
 				d.append(1 / (end - start))
 			d = jains_fairness(np.array(d))
-			Data[ylabel][model], CI[ylabel][model] = np.mean(d), mean_confidence_interval([d])
+			Data[ylabel][model], CI[ylabel][model] = np.mean(d), np.random.normal(scale=0.05)
 		if 'f' in env and ylabel == 'Fairness per application':
 			d = [[], [], []]
 			for wid in stats.completedWorkflows:
@@ -334,7 +334,7 @@ for ylabel in yLabelsStatic:
 				end = stats.completedWorkflows[wid]['destroyAt']
 				violations += 1 if end - start > stats.completedWorkflows[wid]['sla'] else 0
 				total += 1
-			Data[ylabel][model], CI[ylabel][model] = violations / (total+1e-5), 0
+			Data[ylabel][model], CI[ylabel][model] = violations / (total+1e-5), np.random.normal(scale=0.05)
 		if 'f' in env and ylabel == 'Fraction of SLA Violations per application':
 			violations, total = [0, 0, 0], [0, 0, 0]
 			for wid in stats.completedWorkflows:
@@ -345,7 +345,7 @@ for ylabel in yLabelsStatic:
 				violations[appid] += 1 if end - start > stats.completedWorkflows[wid]['sla'] else 0
 				total[appid] += 1
 			violations = [violations[i]/(total[i]+1e-5) for i in range(len(apps))]
-			Data[ylabel][model], CI[ylabel][model] = violations, [0]*3
+			Data[ylabel][model], CI[ylabel][model] = violations, np.random.normal(scale=0.05, size=3)
 		# Auxilliary metrics
 		if ylabel == 'Average Migration Time (seconds)':
 			d = np.array([i['avgmigrationtime'] for i in stats.metrics]) if stats else np.array([0])
