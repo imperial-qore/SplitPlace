@@ -146,7 +146,7 @@ yLabelsStatic = ['Total Energy (Kilowatt-hr)', 'Average Energy (Kilowatt-hr)', '
 	'Average Execution Time (seconds)', 'Average Workflow Wait Time per application (intervals)', \
 	'Average Workflow Wait Time (intervals)', 'Average Workflow Response Time (intervals)', \
 	'Average Workflow Response Time per application (intervals)', 'Average Workflow Accuracy', \
-	'Average Workflow Accuracy per application', 'Decision per application (% Layer)']
+	'Average Workflow Accuracy per application', 'Decision per application (% Layer)', 'Average Reward', 'Average Reward per application']
 
 yLabelStatic2 = {
 	'Average Completion Time (seconds)': 'Number of completed tasks'
@@ -346,6 +346,18 @@ for ylabel in yLabelsStatic:
 				total[appid] += 1
 			violations = [violations[i]/(total[i]+1e-5) for i in range(len(apps))]
 			Data[ylabel][model], CI[ylabel][model] = violations, np.random.normal(scale=0.05, size=3)
+		if 'f'  in env and ylabel == 'Average Reward':
+			ylabel1 = 'Average Workflow Accuracy'
+			ylabel2 = 'Fraction of total SLA Violations'
+			res = 0.5*((1 - Data[ylabel2][model]) + Data[ylabel1][model])
+			ci = 0.5*(CI[ylabel1][model] + CI[ylabel2][model])
+			Data[ylabel][model], CI[ylabel][model] = res, ci
+		if 'f' in env and ylabel == 'Average Reward per application':
+			ylabel1 = 'Average Workflow Accuracy per application'
+			ylabel2 = 'Fraction of SLA Violations per application'
+			res = [0.5*((1 - Data[ylabel2][model][i]) + Data[ylabel1][model][i]) for i in range(3)]
+			ci = [0.5*(CI[ylabel1][model][i] + CI[ylabel2][model][i]) for i in range(3)]
+			Data[ylabel][model], CI[ylabel][model] = res, ci
 		# Auxilliary metrics
 		if ylabel == 'Average Migration Time (seconds)':
 			d = np.array([i['avgmigrationtime'] for i in stats.metrics]) if stats else np.array([0])
@@ -414,7 +426,7 @@ for ylabel in yLabelsStatic:
 	print(color.BOLD+ylabel+color.ENDC)
 	plt.figure(figsize=size)
 	plt.xlabel('Model')
-	plt.ylabel(ylabel.replace('%', '\%'))
+	plt.ylabel(ylabel.replace('%', '\%').replace('Workflow ', ''))
 	values = [Data[ylabel][model] for model in Models]
 	errors = [CI[ylabel][model] for model in Models]
 	plt.ylim(0, max(values)+statistics.stdev(values))
@@ -442,7 +454,7 @@ for ylabel in yLabelsStatic:
 	print(color.BOLD+ylabel+color.ENDC)
 	plt.figure(figsize=size)
 	plt.xlabel('Model')
-	plt.ylabel(ylabel.replace('%', '\%'))
+	plt.ylabel(ylabel.replace('%', '\%').replace('Workflow ', ''))
 	if 'Wait' in ylabel: plt.gca().set_ylim(bottom=0)
 	values = [[Data[ylabel][model][i] for model in Models] for i in range(len(apps))]
 	errors = [[CI[ylabel][model][i] for model in Models] for i in range(len(apps))]
@@ -452,7 +464,7 @@ for ylabel in yLabelsStatic:
 	x = np.arange(len(values[0]))
 	for i in range(len(apps)):
 		p1 = plt.bar( x+(i-1)*width, values[i], width, align='center', yerr=errors[i], capsize=2, color=Colors[i], label=apps[i], linewidth=1, edgecolor='k')
-	plt.legend()
+	# plt.legend(bbox_to_anchor=(1.5, 2), ncol=3)
 	plt.xticks(range(len(values[i])), ModelsXticks, rotation=rot)
 	plt.savefig(SAVE_PATH+'Bar-'+ylabel.replace(' ', '_')+".pdf")
 	plt.clf()
@@ -609,7 +621,7 @@ for ylabel in yLabelsStatic:
 	print(color.BLUE+ylabel+color.ENDC)
 	plt.figure(figsize=size)
 	plt.xlabel('Model')
-	plt.ylabel(ylabel.replace('%', '\%'))
+	plt.ylabel(ylabel.replace('%', '\%').replace('Workflow ', ''))
 	values = [Data[ylabel][model] for model in Models]
 	errors = [CI[ylabel][model] for model in Models]
 	# plt.ylim(0, max(values)+statistics.stdev(values))
@@ -624,7 +636,7 @@ for ylabel in yLabelsStatic:
 	print(color.BLUE+ylabel+color.ENDC)
 	plt.figure(figsize=size)
 	plt.xlabel('Model')
-	plt.ylabel(ylabel.replace('%', '\%'))
+	plt.ylabel(ylabel.replace('%', '\%').replace('Workflow ', ''))
 	if 'Wait' in ylabel: plt.gca().set_ylim(bottom=0)
 	values = [[Data[ylabel][model][i] for model in Models] for i in range(len(apps))]
 	errors = [[CI[ylabel][model][i] for model in Models] for i in range(len(apps))]
@@ -636,7 +648,7 @@ for ylabel in yLabelsStatic:
 		for param in ['boxes', 'whiskers', 'caps', 'medians']:
 			plt.setp(p1[param], color=Colors[i])
 		plt.plot([], '-', c=Colors[i], label=apps[i])
-	plt.legend()
+	# plt.legend()
 	plt.xticks(range(len(values[i])), ModelsXticks, rotation=rot)
 	plt.savefig(SAVE_PATH+'Box-'+ylabel.replace(' ', '_')+".pdf")
 	plt.clf()
@@ -729,9 +741,9 @@ for ylabel in yLabelsStatic:
 	print(color.GREEN+ylabel+color.ENDC)
 	plt.figure(figsize=size)
 	plt.xlabel('Simulation Time (Interval)' if 's' in env else 'Execution Time (Interval)')
-	plt.ylabel(ylabel.replace('%', '\%'))
+	plt.ylabel(ylabel.replace('%', '\%').replace('Workflow ', ''))
 	for i, model in enumerate(Models):
 		plt.plot(reduce(Data[ylabel][model]), color=Colors[Models.index(model)], linewidth=1.5, label=ModelsXticks[i], alpha=0.7)
-	plt.legend()
+	# plt.legend(bbox_to_anchor=(1.2, 1.2), ncol=7)
 	plt.savefig(SAVE_PATH+"Series-"+ylabel.replace(' ', '_')+".pdf")
 	plt.clf()
