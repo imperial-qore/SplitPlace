@@ -142,7 +142,7 @@ yLabelsStatic = ['Total Energy (Kilowatt-hr)', 'Average Energy (Kilowatt-hr)', '
 	'Average Completion Time (seconds)', 'Total Completion Time (seconds)', 'Average Response Time (seconds) per application',\
 	'Cost per container (US Dollars)', 'Fraction of total SLA Violations', 'Fraction of SLA Violations per application', \
 	'Interval Allocation Time (seconds)', 'Number of completed workflows per application', "Fairness (Jain's index)", 'Fairness', 'Fairness per application', \
-	'Average CPU Utilization (%)', 'Average number of containers per Interval', 'Average RAM Utilization (%)', 'Scheduling Time (seconds)',\
+	'Average CPU Utilization (%)', 'Average number of containers per Interval', 'Average RAM Utilization (%)','Average RAM Utilization (MB)', 'Scheduling Time (seconds)',\
 	'Average Execution Time (seconds)', 'Average Workflow Wait Time per application (intervals)', \
 	'Average Workflow Wait Time (intervals)', 'Average Workflow Response Time (intervals)', \
 	'Average Workflow Response Time per application (intervals)', 'Average Workflow Accuracy', \
@@ -399,7 +399,7 @@ for ylabel in yLabelsStatic:
 		if ylabel == 'Average number of containers per Interval':
 			d = np.array([(np.average(i['numcontainers']) if i != [] else 0.) for i in stats.hostinfo]) if stats else np.array([0.])
 			Data[ylabel][model], CI[ylabel][model] = np.sum(d), mean_confidence_interval(d)
-		if ylabel == 'Average RAM Utilization (%)':
+		if ylabel == 'Average RAM Utilization (MB)':
 			d = np.array([(np.average(100*np.array(i['ram'])/(np.array(i['ram'])+np.array(i['ramavailable']))) if i != [] else 0) for i in stats.hostinfo]) if stats else np.array([0.])
 			Data[ylabel][model], CI[ylabel][model] = np.sum(d), mean_confidence_interval(d)
 		# Scheduler metrics
@@ -603,7 +603,7 @@ for ylabel in yLabelsStatic:
 		if ylabel == 'Average number of containers per Interval':
 			d = np.array([(np.average(i['numcontainers']) if i != [] else 0.) for i in stats.hostinfo]) if stats else np.array([0.])
 			Data[ylabel][model], CI[ylabel][model] = d, mean_confidence_interval(d)
-		if ylabel == 'Average RAM Utilization (%)':
+		if ylabel == 'Average RAM Utilization (MB)':
 			d = np.array([(np.average(100*np.array(i['ram'])/(np.array(i['ram'])+np.array(i['ramavailable']))) if i != [] else 0) for i in stats.hostinfo]) if stats else np.array([0.])
 			Data[ylabel][model], CI[ylabel][model] = d, mean_confidence_interval(d)
 		# Scheduler metrics

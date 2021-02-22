@@ -1,0 +1,51 @@
+  
+---
+- hosts: localhost
+  vars:
+    vmlist:
+          - { name: 'vm1', size: 'Standard_B2ms' }
+          # - { name: 'vm2', size: 'Standard_B2ms' }
+  tasks:
+    - name: Create Azure VM
+      shell: "az vm create \
+            --resource-group vm1_group \
+            --name {{ item.name }} \
+            --size {{ item.size }} \
+            --image UbuntuLTS \
+            --ssh-key-values id_rsa.pub
+            --admin-username ansible "
+      loop: "{{ vmlist }}"
+
+    - name: Wait for VM deployment
+      pause:
+        minutes: 1
+
+    - name: Open port 8081 for Azure Functions testing
+      shell: "az vm open-port --resource-group vm1_group --name {{ item.name }} --port 8081"
+      loop: "{{ vmlist }}"
+
+    - name: Install new kernel
+      shell: "az vm run-command \
+              invoke -g vm1_group \
+              -n {{ item.name }} --command-id RunShellScript --scripts \
+              'sudo apt install -y -f linux-image-4.15.0-1009-azure \
+                linux-tools-4.15.0-1009-azure \
+                linux-cloud-tools-4.15.0-1009-azure \
+                linux-headers-4.15.0-1009-azure \
+                linux-modules-4.15.0-1009-azure \
+                linux-modules-extra-4.15.0-1009-azure'"
+      loop: "{{ vmlist }}"
+
+    # - name: Remove old kernel
+    #   shell: "az vm run-command \
+    #           invoke -g vm1_group \
+    #           -n {{ item.name }} --command-id RunShellScript --scripts \
+    #           'sudo apt remove -y -f linux-headers-$(uname -r) \
+    #             linux-image-$(uname -r) \
+    #             linux-image-unsigned-$(uname -r)'"
+    #   loop: "{{ vmlist }}"
+
+    # - name: Restart VM
+    #   shell: "az vm restart -g vm1_group -n {{ item.name }}"
+    #   loop: "{{ vmlist }}"
+...
