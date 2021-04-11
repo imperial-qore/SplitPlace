@@ -28,7 +28,7 @@ from decider.MABDecider import MABDecider
 plt.style.use(['science', 'ieee'])
 plt.rcParams["text.usetex"] = True
 size = (2.9, 2.5)
-env = argv[1]
+env = 'framework'
 option = 0
 
 def fairness(l):
@@ -448,6 +448,8 @@ for ylabel in yLabelsStatic:
 	plt.savefig(SAVE_PATH+'Bar-'+ylabel.replace(' ', '_')+".pdf")
 	plt.clf()
 
+apps2 = ['MNIST', 'FashionMNIST', 'CIFAR100']
+
 for ylabel in yLabelsStatic:
 	if Models[0] not in Data[ylabel]: continue
 	if 'per application' not in ylabel: continue
@@ -463,7 +465,7 @@ for ylabel in yLabelsStatic:
 	width = 0.25
 	x = np.arange(len(values[0]))
 	for i in range(len(apps)):
-		p1 = plt.bar( x+(i-1)*width, values[i], width, align='center', yerr=errors[i], capsize=2, color=Colors[i], label=apps[i], linewidth=1, edgecolor='k')
+		p1 = plt.bar( x+(i-1)*width, values[i], width, align='center', yerr=errors[i], capsize=2, color=Colors[i], label=apps2[i], linewidth=1, edgecolor='k')
 	# plt.legend(bbox_to_anchor=(1.5, 2), ncol=3)
 	plt.xticks(range(len(values[i])), ModelsXticks, rotation=rot)
 	plt.savefig(SAVE_PATH+'Bar-'+ylabel.replace(' ', '_')+".pdf")
@@ -489,7 +491,7 @@ for ylabel in yLabelsStatic:
 			d2 = np.array([i['numdestroyed'] for i in stats.metrics]) if stats else np.array([1])
 			Data[ylabel][model], CI[ylabel][model] = d[d2>0]/d2[d2>0], 0
 		if ylabel == 'Interval Energy (Kilowatt-hr)':
-			d = np.array([i['energytotalinterval'] for i in stats.metrics])/1000 if stats else np.array([0])
+			d = np.array([i['energytotalinterval'] for i in stats.metrics]) * 4.5/1000 if stats else np.array([0])
 			Data[ylabel][model], CI[ylabel][model] = d, mean_confidence_interval(d)
 		if ylabel == 'Average Interval Energy (Kilowatt-hr)':
 			d = np.array([i['energytotalinterval'] for i in stats.metrics])/1000 if stats else np.array([0])
