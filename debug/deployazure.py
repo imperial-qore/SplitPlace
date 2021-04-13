@@ -3,6 +3,11 @@ from time import sleep
 import json
 
 vmlist = [('vm1', 'Standard_B2ms'), ('vm2', 'Standard_B2ms')]
+types = ['B2ms', 'E2as_v4', 'B4ms', 'E4as_v4']
+vmlist = []
+for i in range(40, 50):
+  t = 'B2ms' if i<20 else 'E2as_v4'  if i<30 else 'B4ms' if i < 40 else 'E4as_v4'
+  vmlist.append((f'vm{i+1}', f'Standard_{t}'))
 
 HEADER = '\033[1m'
 FAIL = '\033[91m'

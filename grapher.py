@@ -139,7 +139,7 @@ apps = ['mnist', 'fashionmnist', 'cifar100']
 
 yLabelsStatic = ['Total Energy (Kilowatt-hr)', 'Average Energy (Kilowatt-hr)', 'Interval Energy (Kilowatt-hr)', 'Average Interval Energy (Kilowatt-hr)',\
 	'Number of completed tasks', 'Number of completed tasks per interval', 'Average Response Time (seconds)', 'Total Response Time (seconds)',\
-	'Average Completion Time (seconds)', 'Total Completion Time (seconds)', 'Average Response Time (seconds) per application',\
+	'Average Completion Time (seconds)', 'Total Completion Time (seconds)', 'Average Response Time (seconds) per application', 'Average Migration Time (seconds)',\
 	'Cost per container (US Dollars)', 'Fraction of total SLA Violations', 'Fraction of SLA Violations per application', \
 	'Interval Allocation Time (seconds)', 'Number of completed workflows per application', "Fairness (Jain's index)", 'Fairness', 'Fairness per application', \
 	'Average CPU Utilization (%)', 'Average number of containers per Interval', 'Average RAM Utilization (%)','Average RAM Utilization (MB)', 'Scheduling Time (seconds)',\
@@ -414,6 +414,10 @@ for ylabel in yLabelsStatic:
 # Bar Graphs
 x = range(5,100*5,5)
 pprint(Data)
+# def convert(o):
+#     if isinstance(o, np.int64): return int(o)  
+# with open("data.json", "w") as outfile: 
+#     json.dump(Data, outfile, default=convert)
 # print(CI)
 
 table = {"Models": Models}
