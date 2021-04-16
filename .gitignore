@@ -4,6 +4,7 @@ __pycache__/
 *$py.class
 simulator/workload/datasets
 scheduler/A2C/dataset
+grapher_poster.py
 .vagrant
 framework/agent/DockerImages
 workflow/workload/DockerImages/data/
