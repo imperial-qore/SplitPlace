@@ -17,14 +17,6 @@ SplitPlace is a container orchestration framework for dynamic scheduling and dec
 ## Wiki (WIP)
 Access the [wiki](https://github.com/imperial-qore/SplitPlace/wiki) for installation instructions and replication of results.
 
-## Todo
-1. Add wiki for benchmarks: (a) explain layer and semantic splits, (b) describe IO, (c) describe code and datasets (MNIST, FashionMNIST and CIFAR100).
-2. Explain data pipeline strategy.
-3. Update Workflow engine.
-4. Train MAB split decision module.
-5. Develop decision aware QoS (acc + sla) optimization scheduler DOS.
-6. Compare against baselines :- MAB+DOS, random+DOS, semantic+DOS, layer+DOS, ModelSel (http://www.cse.psu.edu/~jqg5490/assets/files/wosc.pdf).
-
 ## License
 
 BSD-3-Clause. 
