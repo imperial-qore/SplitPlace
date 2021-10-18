@@ -14,8 +14,25 @@
 
 SplitPlace is a container orchestration framework for dynamic scheduling and decision making in resource constrained edge environments. SplitPlace decides whether to use semantic or layer wise splits of neural network applications with latency and accuracy critical user requirements on distributed setups with low memory legacy devices.
 
+## Quick Start Guide
+To run the COSCO framework, install required packages using
+```bash
+python3 install.py
+```
+To run the code with the required scheduler, modify lines 81 and 85 of `main.py` to one of the several options.
+```python
+decider = MABDecider()
+...
+scheduler = GOBIScheduler('energy_latency_'+str(HOSTS))
+```
+
+To run the simulator, use the following command
+```bash
+python3 main.py
+```
+
 ## Wiki (WIP)
-Access the [wiki](https://github.com/imperial-qore/SplitPlace/wiki) for installation instructions and replication of results.
+Access the [wiki](https://github.com/imperial-qore/COSCO/wiki) for installation instructions and replication of results.
 
 ## License
 
