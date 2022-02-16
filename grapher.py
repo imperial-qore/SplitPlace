@@ -470,7 +470,7 @@ for ylabel in yLabelsStatic:
 	width = 0.25
 	x = np.arange(len(values[0]))
 	for i in range(len(apps)):
-		p1 = plt.bar( x+(i-1)*width, values[i], width, align='center', yerr=errors[i], capsize=2, color=Colors2[i], label=apps2[i], linewidth=1, edgecolor='k')
+		p1 = plt.bar( x+(i-1)*width, values[i], width, align='center', yerr=errors[i], capsize=2, color=Colors[i], label=apps2[i], linewidth=1, edgecolor='k')
 	# plt.legend(bbox_to_anchor=(1.5, 2), ncol=3)
 	plt.xticks(range(len(values[i])), ModelsXticks, rotation=rot)
 	plt.savefig(SAVE_PATH+'Bar-'+ylabel.replace(' ', '_')+".pdf")
@@ -478,7 +478,7 @@ for ylabel in yLabelsStatic:
 
 df = pd.DataFrame(table)
 df.to_csv(SAVE_PATH+'table.csv')
-# exit()
+exit()
 
 ##### BOX PLOTS #####
 
