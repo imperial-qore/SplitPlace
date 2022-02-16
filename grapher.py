@@ -135,6 +135,7 @@ ModelsXticks = ['M+D', 'M+G', 'R+D', 'L+G', 'S+G', 'Gillis', 'MC']
 rot = 15
 xLabel = 'Simulation Time (minutes)'
 Colors = ['red', 'blue', 'green', 'orange', 'orchid', 'pink', 'cyan']
+Colors2 = ['indigo', 'brown', 'springgreen']
 apps = ['mnist', 'fashionmnist', 'cifar100']
 
 yLabelsStatic = ['Total Energy (Kilowatt-hr)', 'Average Energy (Kilowatt-hr)', 'Interval Energy (Kilowatt-hr)', 'Average Interval Energy (Kilowatt-hr)',\
@@ -469,7 +470,7 @@ for ylabel in yLabelsStatic:
 	width = 0.25
 	x = np.arange(len(values[0]))
 	for i in range(len(apps)):
-		p1 = plt.bar( x+(i-1)*width, values[i], width, align='center', yerr=errors[i], capsize=2, color=Colors[i], label=apps2[i], linewidth=1, edgecolor='k')
+		p1 = plt.bar( x+(i-1)*width, values[i], width, align='center', yerr=errors[i], capsize=2, color=Colors2[i], label=apps2[i], linewidth=1, edgecolor='k')
 	# plt.legend(bbox_to_anchor=(1.5, 2), ncol=3)
 	plt.xticks(range(len(values[i])), ModelsXticks, rotation=rot)
 	plt.savefig(SAVE_PATH+'Bar-'+ylabel.replace(' ', '_')+".pdf")
