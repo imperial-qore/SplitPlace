@@ -5,7 +5,7 @@ import json
 vmlist = [('vm1', 'Standard_B2ms'), ('vm2', 'Standard_B2ms')]
 types = ['B2ms', 'E2as_v4', 'B4ms', 'E4as_v4']
 vmlist = []
-for i in range(40, 50):
+for i in range(50):
   t = 'B2ms' if i<20 else 'E2as_v4'  if i<30 else 'B4ms' if i < 40 else 'E4as_v4'
   vmlist.append((f'vm{i+1}', f'Standard_{t}'))
 
@@ -27,7 +27,7 @@ def run(cmd, shell=True):
 
 print(f'{HEADER}Create Azure VM{ENDC}')
 for name, size in vmlist:
-  run(f'az vm create --resource-group vm1_group --name {name} --size {size} --image UbuntuLTS --ssh-key-values id_rsa.pub --admin-username ansible')
+  run(f'az vm create --resource-group SplitPlace --name {name} --size {size} --image UbuntuLTS --ssh-key-values id_rsa.pub --admin-username ansible')
 
 # #################
 
@@ -38,41 +38,41 @@ sleep(60)
 
 print(f'{HEADER}Open port 8081{ENDC}')
 for name, size in vmlist:
-  run(f'az vm open-port --resource-group vm1_group --name {name} --port 8081')
+  run(f'az vm open-port --resource-group SplitPlace --name {name} --port 8081')
 
 #################
 
 print(f'{HEADER}Install new kernel{ENDC}')
 for name, size in vmlist:
-  cmd = f"az vm run-command invoke -g vm1_group -n {name} --command-id RunShellScript --scripts 'sudo apt install -y -f linux-image-4.15.0-1009-azure linux-tools-4.15.0-1009-azure linux-cloud-tools-4.15.0-1009-azure linux-headers-4.15.0-1009-azure linux-modules-4.15.0-1009-azure linux-modules-extra-4.15.0-1009-azure'"
+  cmd = f"az vm run-command invoke -g SplitPlace -n {name} --command-id RunShellScript --scripts 'sudo apt install -y -f linux-image-4.15.0-1009-azure linux-tools-4.15.0-1009-azure linux-cloud-tools-4.15.0-1009-azure linux-headers-4.15.0-1009-azure linux-modules-4.15.0-1009-azure linux-modules-extra-4.15.0-1009-azure'"
   run(cmd)
 
 #################
 
 print(f'{HEADER}Deallocate VMs{ENDC}')
 for name, size in vmlist:
-  run(f'az vm deallocate --resource-group vm1_group --name {name}')
+  run(f'az vm deallocate --resource-group SplitPlace --name {name}')
 
 #################
 
 print(f'{HEADER}Update Disks{ENDC}')
-data = run("az disk list --resource-group vm1_group")
+data = run("az disk list --resource-group SplitPlace")
 d = eval(data.replace('\r\n', '').replace('null', "'null'"))
 for a in d:
   disk_id = a['id']
   disk_id = disk_id.split('/')[-1]
-  run(f'az disk update --name {disk_id} --resource-group vm1_group --size-gb 256 --set tier=P15')
+  run(f'az disk update --name {disk_id} --resource-group SplitPlace --size-gb 256 --set tier=P15')
 
 #################
 
 print(f'{HEADER}Start VMs{ENDC}')
 for name, size in vmlist:
-  run(f'az vm start --resource-group vm1_group --name {name}')
+  run(f'az vm start --resource-group SplitPlace --name {name}')
 
 #################
 
 # print(f'{HEADER}Create storage account')
-# run(f'az storage account create --name shreshthstorage --resource-group vm1_group --access-tier Hot --kind StorageV2 --location uksouth --sku Standard_RAGRS')
+# run(f'az storage account create --name shreshthstorage --resource-group SplitPlace --access-tier Hot --kind StorageV2 --location uksouth --sku Standard_RAGRS')
 
 #################
 
@@ -85,5 +85,5 @@ for name, size in vmlist:
 # for name, size in vmlist:
 #   setting['ladCfg']['resourceId'] = name
 #   sett = json.dumps(setting).replace('"', "'")
-#   cmd = f'az vm diagnostics set --settings "{sett}" --protected-settings "{p_settings}" --resource-group vm1_group --vm-name {name}'
+#   cmd = f'az vm diagnostics set --settings "{sett}" --protected-settings "{p_settings}" --resource-group SplitPlace --vm-name {name}'
 #   run(cmd)
