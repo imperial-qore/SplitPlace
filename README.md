@@ -15,10 +15,12 @@
 SplitPlace is a container orchestration framework for dynamic scheduling and decision making in resource constrained edge environments. SplitPlace decides whether to use semantic or layer wise splits of neural network applications with latency and accuracy critical user requirements on distributed setups with low memory legacy devices.
 
 ## Quick Start Guide
-To run the COSCO framework, install required packages using
+
+SplitPlace is based on the [COSCO Framework](https://github.com/imperial-qore/COSCO) and uses the co-simulation and surrogate optimization primitives of COSCO. To run the framework, install required packages using
 ```bash
 python3 install.py
 ```
+
 To run the code with the required scheduler, modify lines 81 and 85 of `main.py` to one of the several options.
 ```python
 decider = MABDecider()
@@ -31,8 +33,30 @@ To run the simulator, use the following command
 python3 main.py
 ```
 
-## Wiki (WIP)
+## Wiki 
 Access the [wiki](https://github.com/imperial-qore/COSCO/wiki) for installation instructions and replication of results.
+
+
+## Links
+| Items | Contents | 
+| --- | --- |
+| **Paper** | (coming soon) |
+| **Pre-print** | (coming soon) |
+| **Documentation** | https://github.com/imperial-qore/COSCO/wiki |
+| **Video** | (coming soon) |
+| **Contact**| Shreshth Tuli ([@shreshthtuli](https://github.com/shreshthtuli))  |
+| **Funding**| Imperial President's scholarship, H2020-825040 (RADON) |
+
+## Cite this work
+Our work is published in IEEE TMC journal. Cite using the following bibtex entry.
+```bibtex
+@article{tuli2021splitplace,
+  author={Tuli, Shreshth and Casale, Giuliano and Jennings, Nicholas R.},
+  journal={IEEE Transactions on Mobile Computing}, 
+  title={{SplitPlace: AI Augmented Splitting and Placement of Large-Scale Neural Networks in Mobile Edge Environments}}, 
+  year={2022}
+}
+```
 
 ## License
 
