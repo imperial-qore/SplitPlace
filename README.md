@@ -41,11 +41,12 @@ Access the [wiki](https://github.com/imperial-qore/COSCO/wiki) for installation 
 | Items | Contents | 
 | --- | --- |
 | **Paper** | (coming soon) |
-| **Pre-print** | (coming soon) |
+| **Pre-print** | [(coming soon)](https://arxiv.org/pdf/2205.10635.pdf) |
 | **Documentation** | https://github.com/imperial-qore/COSCO/wiki |
 | **Video** | (coming soon) |
 | **Contact**| Shreshth Tuli ([@shreshthtuli](https://github.com/shreshthtuli))  |
 | **Funding**| Imperial President's scholarship, H2020-825040 (RADON) |
+
 
 ## Cite this work
 Our work is published in IEEE TMC journal. Cite using the following bibtex entry.
