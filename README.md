@@ -41,7 +41,7 @@ Access the [wiki](https://github.com/imperial-qore/COSCO/wiki) for installation 
 | Items | Contents | 
 | --- | --- |
 | **Paper** | (coming soon) |
-| **Pre-print** | https://arxiv.org/pd f/2205.10635.pdf |
+| **Pre-print** | https://arxiv.org/pdf/2205.10635.pdf |
 | **Documentation** | https://github.com/imperial-qore/COSCO/wiki |
 | **Video** | (coming soon) |
 | **Contact**| Shreshth Tuli ([@shreshthtuli](https://github.com/shreshthtuli))  |
