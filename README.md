@@ -40,7 +40,7 @@ Access the [wiki](https://github.com/imperial-qore/COSCO/wiki) for installation 
 ## Links
 | Items | Contents | 
 | --- | --- |
-| **Paper** | (coming soon) |
+| **Paper** | https://ieeexplore.ieee.org/document/9780535 |
 | **Pre-print** | https://arxiv.org/pdf/2205.10635.pdf |
 | **Documentation** | https://github.com/imperial-qore/COSCO/wiki |
 | **Video** | (coming soon) |
